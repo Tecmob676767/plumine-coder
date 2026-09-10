@@ -32,6 +32,13 @@ document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   checkAuthSession();
   updateCreatorBadge();
+
+  // Suddenly ask for login when first entering if not yet authenticated
+  if (!currentUser) {
+    setTimeout(() => {
+      openAuthModal();
+    }, 450);
+  }
 });
 
 /* ==========================================================================
@@ -257,6 +264,7 @@ function applyAuthState() {
       authPill.title = "Master Creator Admin (Plumine - 9535770964)";
 
       if (creatorPortalBtn) {
+        creatorPortalBtn.style.display = "inline-flex";
         creatorPortalBtn.style.borderColor = "#10b981";
         creatorPortalBtn.style.background = "rgba(16, 185, 129, 0.2)";
         creatorPortalBtn.style.color = "#34d399";
@@ -266,7 +274,7 @@ function applyAuthState() {
         creatorLockIcon.setAttribute("data-lucide", "shield-check");
       }
     } else {
-      // REGULAR CLIENT
+      // REGULAR CLIENT - HIDE ADMIN BUTTON COMPLETELY
       authPill.classList.add("logged-in");
       authPill.style.borderColor = "var(--color-accent-emerald)";
       authPill.style.background = "rgba(16, 185, 129, 0.12)";
@@ -274,13 +282,7 @@ function applyAuthState() {
       authPill.title = `Client: ${currentUser.name} (${currentUser.phone})`;
 
       if (creatorPortalBtn) {
-        creatorPortalBtn.style.borderColor = "rgba(245, 158, 11, 0.35)";
-        creatorPortalBtn.style.background = "rgba(245, 158, 11, 0.12)";
-        creatorPortalBtn.style.color = "#fbbf24";
-        creatorPortalBtn.title = "Creator Admin (Restricted to Plumine)";
-      }
-      if (creatorLockIcon) {
-        creatorLockIcon.setAttribute("data-lucide", "shield-lock");
+        creatorPortalBtn.style.display = "none";
       }
     }
 
@@ -291,15 +293,15 @@ function applyAuthState() {
       loggedInUserPhone.textContent = `+91 ${currentUser.phone}`;
     }
   } else {
-    // Guest State
+    // Guest State - HIDE ADMIN BUTTON COMPLETELY
     authPill.classList.remove("logged-in");
     authPill.style.borderColor = "var(--border-subtle)";
     authPill.style.background = "rgba(255, 255, 255, 0.06)";
     authPillText.textContent = "Login";
     authPill.title = "Click to login with Name & Phone";
 
-    if (creatorLockIcon) {
-      creatorLockIcon.setAttribute("data-lucide", "shield-lock");
+    if (creatorPortalBtn) {
+      creatorPortalBtn.style.display = "none";
     }
 
     if (loginNotice) loginNotice.classList.remove("hidden");

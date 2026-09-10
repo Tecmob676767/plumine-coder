@@ -59,9 +59,9 @@
           <span id="authPillText">Login</span>
         </div>
 
-        <!-- Creator Admin Toggle Button (Exclusive to Plumine: 9535770964) -->
-        <button id="creatorPortalBtn" class="btn-creator-portal" title="Creator Admin (Exclusively for Plumine - 9535770964)" onclick="handleCreatorPortalClick()">
-          <i data-lucide="shield-lock" id="creatorLockIcon"></i>
+        <!-- Creator Admin Button (Hidden by default, only visible for Plumine: 9535770964) -->
+        <button id="creatorPortalBtn" class="btn-creator-portal" style="display: none;" title="Creator Admin" onclick="handleCreatorPortalClick()">
+          <i data-lucide="shield-check" id="creatorLockIcon"></i>
           <span class="creator-btn-text">Creator Admin</span>
           <span class="badge-counter" id="creatorBadgeCount">0</span>
         </button>
@@ -577,7 +577,6 @@
         <h4>Client Tools</h4>
         <a href="javascript:void(0)" onclick="openClientTrackModal()">Track My Request</a>
         <a href="javascript:void(0)" onclick="openAuthModal()">Login / Account</a>
-        <a href="javascript:void(0)" onclick="openCreatorPortal()">Creator Admin Panel</a>
       </div>
 
       <div class="footer-contact">
@@ -603,36 +602,31 @@
         <div class="modal-title-group">
           <div class="modal-icon"><i data-lucide="user-plus"></i></div>
           <div>
-            <h3 class="modal-title">Client Login</h3>
-            <p class="modal-desc">Enter your Name & Phone number to send and track requests.</p>
+            <h3 class="modal-title">Welcome to Plumine Coder</h3>
+            <p class="modal-desc">Please enter your Name & Phone number to get started.</p>
           </div>
         </div>
         <button class="modal-close" onclick="closeAuthModal()"><i data-lucide="x"></i></button>
       </div>
 
       <form id="authForm" onsubmit="handleAuthSubmit(event)" class="modal-body">
-        <div class="admin-login-hint" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.82rem; color: #fde68a; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-          <i data-lucide="shield-check" style="color: #fbbf24; width: 16px; height: 16px; flex-shrink: 0;"></i>
-          <span><strong>Creator Admin:</strong> Enter Name: <strong>Plumine</strong> & Phone: <strong>9535770964</strong> to go directly to Admin Dashboard.</span>
-        </div>
-
         <div class="form-field">
           <label for="authName">Your Full Name <span class="required">*</span></label>
-          <input type="text" id="authName" required placeholder="Your Full Name (or Plumine)" />
+          <input type="text" id="authName" required placeholder="Enter your full name" />
         </div>
 
         <div class="form-field">
           <label for="authPhone">10-Digit Mobile / WhatsApp Number <span class="required">*</span></label>
           <div class="phone-input-wrapper">
             <span class="country-prefix">+91</span>
-            <input type="tel" id="authPhone" required pattern="[0-9]{10}" maxlength="10" placeholder="Mobile Number (or 9535770964)" />
+            <input type="tel" id="authPhone" required pattern="[0-9]{10}" maxlength="10" placeholder="9876543210" />
           </div>
-          <small class="field-hint">Used to associate your requests or unlock Admin privileges.</small>
+          <small class="field-hint">Used to associate and track your custom website requests.</small>
         </div>
 
         <button type="submit" class="btn-modal-primary">
           <span>Continue / Log In</span>
-          <i data-lucide="check"></i>
+          <i data-lucide="arrow-right"></i>
         </button>
       </form>
     </div>
