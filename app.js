@@ -164,45 +164,28 @@ function testFirebaseSync() {
 }
 
 /* ==========================================================================
-   STORAGE INITIALIZATION & SEED ORDERS
+   STORAGE INITIALIZATION (ZERO FAKE DATA - CLEAN DATABASE)
    ========================================================================== */
 function initStorage() {
-  if (!localStorage.getItem("plumine_orders")) {
-    const seedOrders = [
-      {
-        id: "#PLUM-1042",
-        title: "Aura Fragrances",
-        category: "Shop / Product Showcase",
-        scope: "Single Page (Standard ₹500)",
-        colorTheme: "Luxury Black & Gold",
-        features: ["WhatsApp Button", "Contact Form", "Photo Gallery", "Mobile Responsive"],
-        description: "Perfume catalog showing 6 signature bottles, notes description, and direct WhatsApp order button.",
-        referenceLink: "https://instagram.com/aura_fragrance",
-        urgency: "Normal (2 to 3 days)",
-        price: "₹500",
-        clientName: "Vikram Mehta",
-        clientPhone: "9820123456",
-        status: "In Progress",
-        createdAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString()
-      },
-      {
-        id: "#PLUM-1043",
-        title: "Dr. Ananya Dental Care",
-        category: "Business / Company",
-        scope: "Single Page (Standard ₹500)",
-        colorTheme: "Clean Minimalist White & Blue",
-        features: ["WhatsApp Button", "Contact Form", "Google Map Embed", "Mobile Responsive"],
-        description: "Dental clinic single page with doctor credentials, treatment list, Google map, and appointment booking form.",
-        referenceLink: "",
-        urgency: "Urgent (Within 24 hours)",
-        price: "₹500",
-        clientName: "Dr. Ananya Roy",
-        clientPhone: "9988776655",
-        status: "New Request",
-        createdAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString()
-      }
-    ];
-    localStorage.setItem("plumine_orders", JSON.stringify(seedOrders));
+  // Purge any fake / sample seed data from previous versions
+  const stored = localStorage.getItem("plumine_orders");
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      // Remove any fake names (Vikram Mehta, Dr. Ananya Roy, etc.)
+      const cleaned = parsed.filter(o => 
+        o.clientName !== "Vikram Mehta" && 
+        o.clientName !== "Dr. Ananya Roy" &&
+        o.id !== "#PLUM-1042" &&
+        o.id !== "#PLUM-1043"
+      );
+      localStorage.setItem("plumine_orders", JSON.stringify(cleaned));
+    } catch (e) {
+      localStorage.setItem("plumine_orders", JSON.stringify([]));
+    }
+  } else {
+    // Start with completely fresh empty list
+    localStorage.setItem("plumine_orders", JSON.stringify([]));
   }
 
   if (!localStorage.getItem("plumine_creator_wa")) {
@@ -361,7 +344,10 @@ function handleAuthSubmit(e) {
   closeAuthModal();
 
   if (isMasterAdmin(currentUser)) {
-    showToast("👑 Welcome back, Master Plumine! Full Admin Privileges Unlocked.", "shield-check");
+    showToast("👑 Welcome, Plumine! Opening Creator Admin...", "shield-check");
+    setTimeout(() => {
+      openCreatorPortal();
+    }, 400);
   } else {
     showToast(`Welcome, ${name}! You can now request websites & track orders.`, "check");
   }
