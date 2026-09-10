@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plumine Coder | Custom Websites at ₹500 Only</title>
+  <meta name="description" content="Plumine Coder - Professional, modern websites crafted for your business or portfolio at just ₹500. Fast turnaround, 100% mobile-friendly." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Firebase SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <div class="container announcement-content">
+      <span class="badge-sparkle"><i data-lucide="sparkles"></i> Special Creator Offer</span>
+      <span>Get your complete, high-speed single website crafted for <strong>only ₹500</strong>!</span>
+      <a href="#request-section" class="announcement-link">Send Request Now <i data-lucide="arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo">
+        <div class="logo-icon">
+          <i data-lucide="code-2"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Plumine<span class="highlight">Coder</span></span>
+          <span class="brand-tag">Web Creator Studio</span>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#features">What You Get</a>
+        <a href="#pricing">₹500 Offer</a>
+        <a href="#samples">Showcase</a>
+        <a href="#faq">FAQ</a>
+        <a href="#request-section" class="btn-nav-primary">
+          <i data-lucide="plus-circle"></i> Request a Website
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Auth state indicator -->
+        <div id="authPill" class="auth-pill" onclick="openAuthModal()">
+          <i data-lucide="user"></i>
+          <span id="authPillText">Login</span>
+        </div>
+
+        <!-- Creator Admin Toggle Button (Exclusive to Plumine: 9535770964) -->
+        <button id="creatorPortalBtn" class="btn-creator-portal" title="Creator Admin (Exclusively for Plumine - 9535770964)" onclick="handleCreatorPortalClick()">
+          <i data-lucide="shield-lock" id="creatorLockIcon"></i>
+          <span class="creator-btn-text">Creator Admin</span>
+          <span class="badge-counter" id="creatorBadgeCount">0</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Dropdown -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#features" onclick="toggleMobileMenu()">What You Get</a>
+    <a href="#pricing" onclick="toggleMobileMenu()">₹500 Offer</a>
+    <a href="#samples" onclick="toggleMobileMenu()">Showcase</a>
+    <a href="#faq" onclick="toggleMobileMenu()">FAQ</a>
+    <a href="#request-section" class="btn-primary" onclick="toggleMobileMenu()">
+      <i data-lucide="plus-circle"></i> Request a Website (₹500)
+    </a>
+  </div>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+      <div class="container hero-container">
+        <div class="hero-content">
+          <div class="hero-pill">
+            <span class="dot-pulse"></span>
+            <span>Plumine Coder • Crafting Digital Realities</span>
+          </div>
+
+          <h1 class="hero-title">
+            Need a Website? <br />
+            Crafted for <span class="gradient-text">Only ₹500</span>.
+          </h1>
+
+          <p class="hero-subtitle">
+            Send your website idea, choose your style, and let <strong>Plumine Coder</strong> build a lightning-fast, mobile-friendly, beautiful website for your business, shop, or personal portfolio.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#request-section" class="btn-hero-primary">
+              <span>Start Web Request</span>
+              <i data-lucide="arrow-up-right"></i>
+            </a>
+            <button class="btn-hero-secondary" onclick="openClientTrackModal()">
+              <i data-lucide="search"></i>
+              <span>Track My Request</span>
+            </button>
+          </div>
+
+          <div class="hero-trust">
+            <div class="trust-item">
+              <i data-lucide="check-circle-2"></i>
+              <span>Flat ₹500 Base Price</span>
+            </div>
+            <div class="trust-item">
+              <i data-lucide="smartphone"></i>
+              <span>100% Mobile Ready</span>
+            </div>
+            <div class="trust-item">
+              <i data-lucide="zap"></i>
+              <span>24 - 48h Rapid Delivery</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Graphic / Interactive Card -->
+        <div class="hero-visual">
+          <div class="mockup-card glass-panel">
+            <div class="mockup-header">
+              <span class="window-dot red"></span>
+              <span class="window-dot yellow"></span>
+              <span class="window-dot green"></span>
+              <span class="mockup-url">pluminecoder.web / client-portal</span>
+            </div>
+            <div class="mockup-body">
+              <div class="deal-card">
+                <div class="deal-badge">🔥 Creator Flat Deal</div>
+                <div class="deal-price">
+                  <span class="currency">₹</span>
+                  <span class="amount">500</span>
+                  <span class="tag">/ single website</span>
+                </div>
+                <p class="deal-desc">Full custom landing or portfolio page with modern UI, contact form, WhatsApp button & responsive design.</p>
+                <div class="deal-features">
+                  <div class="feature-tick"><i data-lucide="check"></i> Clean, responsive layout</div>
+                  <div class="feature-tick"><i data-lucide="check"></i> WhatsApp order/inquiry integration</div>
+                  <div class="feature-tick"><i data-lucide="check"></i> Custom color scheme & fonts</div>
+                  <div class="feature-tick"><i data-lucide="check"></i> Free hosting guidance</div>
+                </div>
+                <button class="btn-card-action" onclick="scrollToRequest()">
+                  Submit Your Requirements <i data-lucide="send"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING & WHAT'S INCLUDED SECTION -->
+    <section id="pricing" class="section pricing-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-tag">Unbeatable Value</span>
+          <h2 class="section-title">The ₹500 Single Website Guarantee</h2>
+          <p class="section-subtitle">No hidden charges or surprise fees. Everything you need to establish an impressive online presence.</p>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Main ₹500 Package -->
+          <div class="pricing-card featured glass-panel">
+            <div class="popular-ribbon">Most Requested</div>
+            <div class="pricing-head">
+              <h3>Single Page Web Presence</h3>
+              <p>Ideal for local businesses, freelancers, creators, startups & product showcases.</p>
+              <div class="price-display">
+                <span class="currency-sign">₹</span>
+                <span class="price-number">500</span>
+                <span class="price-duration">one-time</span>
+              </div>
+            </div>
+            <ul class="pricing-features-list">
+              <li><i data-lucide="check-circle"></i> Complete Custom Single-Page Website</li>
+              <li><i data-lucide="check-circle"></i> Hero Header with Impactful Title & Call to Action</li>
+              <li><i data-lucide="check-circle"></i> About You / Business Showcase Section</li>
+              <li><i data-lucide="check-circle"></i> Services, Products, or Portfolio Gallery</li>
+              <li><i data-lucide="check-circle"></i> Direct WhatsApp Chat & Call Buttons</li>
+              <li><i data-lucide="check-circle"></i> Working Contact / Lead Form</li>
+              <li><i data-lucide="check-circle"></i> Mobile, Tablet & Desktop Optimized</li>
+              <li><i data-lucide="check-circle"></i> Fast 24 to 48 Hours Delivery</li>
+              <li><i data-lucide="check-circle"></i> Free Guidance on Domain & Hosting</li>
+            </ul>
+            <a href="#request-section" class="btn-pricing-cta">Order Now for ₹500</a>
+          </div>
+
+          <!-- Why Choose Plumine Coder -->
+          <div class="why-us-card glass-panel" id="features">
+            <h3>Why Work With Plumine Coder?</h3>
+            <div class="why-item">
+              <div class="why-icon"><i data-lucide="user-check"></i></div>
+              <div>
+                <h4>Direct Creator Communication</h4>
+                <p>You work directly with the developer. No middlemen or agency red tape.</p>
+              </div>
+            </div>
+            <div class="why-item">
+              <div class="why-icon"><i data-lucide="message-square-code"></i></div>
+              <div>
+                <h4>WhatsApp Request Sync</h4>
+                <p>Send your requirements instantly to WhatsApp with one click.</p>
+              </div>
+            </div>
+            <div class="why-item">
+              <div class="why-icon"><i data-lucide="lock"></i></div>
+              <div>
+                <h4>Simple Phone & Name Login</h4>
+                <p>No tedious passwords. Track your website build with just your phone number.</p>
+              </div>
+            </div>
+            <div class="why-item">
+              <div class="why-icon"><i data-lucide="refresh-cw"></i></div>
+              <div>
+                <h4>Free Revisions Included</h4>
+                <p>We tweak texts, colors, and layout until you are 100% happy with the result.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SAMPLES / SHOWCASE SECTION -->
+    <section id="samples" class="section showcase-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-tag">Previous Creations</span>
+          <h2 class="section-title">Built by Plumine Coder</h2>
+          <p class="section-subtitle">A glimpse of diverse websites crafted for clients across various niches.</p>
+        </div>
+
+        <div class="samples-grid">
+          <!-- Card 1 -->
+          <div class="sample-card glass-panel">
+            <div class="sample-preview sample-bg-1">
+              <span class="sample-badge">Business & Services</span>
+              <div class="sample-wireframe">
+                <div class="wire-header"></div>
+                <div class="wire-hero"></div>
+                <div class="wire-grid">
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+            <div class="sample-content">
+              <h4>Apex Studio & Services</h4>
+              <p>Sleek modern business portfolio with booking buttons, service cards, and Google Map embed.</p>
+              <div class="sample-meta">
+                <span>Cost: ₹500</span>
+                <span>Type: Single Page</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="sample-card glass-panel">
+            <div class="sample-preview sample-bg-2">
+              <span class="sample-badge">Online Store / Food</span>
+              <div class="sample-wireframe">
+                <div class="wire-header"></div>
+                <div class="wire-hero alt"></div>
+                <div class="wire-grid">
+                  <span></span><span></span>
+                </div>
+              </div>
+            </div>
+            <div class="sample-content">
+              <h4>Urban Crust Bakery & Cafe</h4>
+              <p>Digital menu and instant WhatsApp ordering for baked goods and drinks.</p>
+              <div class="sample-meta">
+                <span>Cost: ₹500</span>
+                <span>Type: Single Page</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="sample-card glass-panel">
+            <div class="sample-preview sample-bg-3">
+              <span class="sample-badge">Creator / Portfolio</span>
+              <div class="sample-wireframe">
+                <div class="wire-header"></div>
+                <div class="wire-hero bio"></div>
+                <div class="wire-grid">
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+            <div class="sample-content">
+              <h4>DevKishan | Creative Bio & Links</h4>
+              <p>Clean personal bio, project links, resume download, and interactive contact modal.</p>
+              <div class="sample-meta">
+                <span>Cost: ₹500</span>
+                <span>Type: Single Page</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REQUEST CREATION SECTION (THE MAIN HUB) -->
+    <section id="request-section" class="section request-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-tag highlight-tag">Get Started Today</span>
+          <h2 class="section-title">Send Your Website Request</h2>
+          <p class="section-subtitle">Fill in your website details below. Your fixed rate is <strong>₹500</strong> for a single website.</p>
+        </div>
+
+        <div class="request-wrapper glass-panel">
+          <!-- Auth Reminder Banner if Not Logged In -->
+          <div id="loginNoticeBanner" class="auth-notice-banner">
+            <div class="notice-text">
+              <i data-lucide="info"></i>
+              <span>Enter your <strong>Name</strong> and <strong>Phone Number</strong> to proceed with your request and track its progress anytime.</span>
+            </div>
+            <button class="btn-sm-auth" onclick="openAuthModal()">Login / Enter Details</button>
+          </div>
+
+          <!-- Logged In Indicator Banner -->
+          <div id="userWelcomeBanner" class="user-welcome-banner hidden">
+            <div class="user-info">
+              <div class="user-avatar"><i data-lucide="user-check"></i></div>
+              <div>
+                <span class="user-greeting">Logged in as: <strong id="loggedInUserName">Client</strong></span>
+                <span class="user-phone">Phone: <span id="loggedInUserPhone">+91-0000000000</span></span>
+              </div>
+            </div>
+            <div class="user-actions">
+              <button class="btn-text" onclick="openClientTrackModal()"><i data-lucide="list"></i> My Requests</button>
+              <button class="btn-text logout" onclick="handleLogout()"><i data-lucide="log-out"></i> Change</button>
+            </div>
+          </div>
+
+          <!-- The Multi-Part Web Request Form -->
+          <form id="webRequestForm" class="request-form" onsubmit="handleFormSubmit(event)">
+            <!-- STEP 1: Basic Website Info -->
+            <div class="form-group-block">
+              <h3 class="form-block-title">
+                <span class="step-badge">1</span> Website Basics
+              </h3>
+              
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="webTitle">Website / Business Name <span class="required">*</span></label>
+                  <input type="text" id="webTitle" required placeholder="e.g. Royal Cafe, Priya Boutique, TechVibe Portfolio" />
+                </div>
+                <div class="form-field">
+                  <label for="webCategory">Website Type / Category <span class="required">*</span></label>
+                  <select id="webCategory" required>
+                    <option value="Business / Company">Business / Company Profile</option>
+                    <option value="Shop / Product Showcase">Shop / Product Showcase (WhatsApp Order)</option>
+                    <option value="Personal / Portfolio">Personal Portfolio / Resume</option>
+                    <option value="Restaurant / Cafe">Restaurant / Cafe / Food Menu</option>
+                    <option value="Landing Page">App / Service Promo Landing Page</option>
+                    <option value="Event / Wedding">Event / Wedding / Occasion</option>
+                    <option value="Other Custom Web">Other Custom Request</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="pagesCount">Scope / Structure</label>
+                  <select id="pagesCount">
+                    <option value="Single Page (Standard ₹500)">Single Page (Full Standard Package - ₹500)</option>
+                    <option value="Multi Page (2-3 Pages)">Multi-Page (2 to 3 Pages - Request quote)</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="colorTheme">Preferred Color & Design Theme</label>
+                  <select id="colorTheme">
+                    <option value="Plumine Dark & Neon Violet">Plumine Dark & Neon Violet</option>
+                    <option value="Clean Minimalist White & Blue">Clean Minimalist White & Blue</option>
+                    <option value="Luxury Black & Gold">Luxury Black & Gold</option>
+                    <option value="Warm Vibrant (Orange / Coral)">Warm Vibrant (Orange / Coral)</option>
+                    <option value="Nature Green & Earthy">Nature Green & Earthy</option>
+                    <option value="Let Creator Choose Best Fit">Let Plumine Coder Choose Best Fit</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: Desired Features -->
+            <div class="form-group-block">
+              <h3 class="form-block-title">
+                <span class="step-badge">2</span> Key Features You Want (Included in ₹500)
+              </h3>
+              <div class="features-checklist">
+                <label class="checkbox-pill">
+                  <input type="checkbox" name="reqFeatures" value="WhatsApp Button" checked />
+                  <span><i data-lucide="message-circle"></i> WhatsApp Quick Chat Button</span>
+                </label>
+                <label class="checkbox-pill">
+                  <input type="checkbox" name="reqFeatures" value="Contact Form" checked />
+                  <span><i data-lucide="mail"></i> Contact / Inquiry Form</span>
+                </label>
+                <label class="checkbox-pill">
+                  <input type="checkbox" name="reqFeatures" value="Mobile Responsive" checked />
+                  <span><i data-lucide="smartphone"></i> 100% Mobile Responsive</span>
+                </label>
+                <label class="checkbox-pill">
+                  <input type="checkbox" name="reqFeatures" value="Photo Gallery" />
+                  <span><i data-lucide="image"></i> Photo / Product Gallery</span>
+                </label>
+                <label class="checkbox-pill">
+                  <input type="checkbox" name="reqFeatures" value="Google Map Embed" />
+                  <span><i data-lucide="map-pin"></i> Location / Google Map</span>
+                </label>
+                <label class="checkbox-pill">
+                  <input type="checkbox" name="reqFeatures" value="Social Media Links" checked />
+                  <span><i data-lucide="share-2"></i> Social Media Links (Instagram/FB)</span>
+                </label>
+                <label class="checkbox-pill">
+                  <input type="checkbox" name="reqFeatures" value="Customer Testimonials" />
+                  <span><i data-lucide="star"></i> Testimonials / Reviews Section</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- STEP 3: Content & Instructions -->
+            <div class="form-group-block">
+              <h3 class="form-block-title">
+                <span class="step-badge">3</span> Details & Description
+              </h3>
+              <div class="form-field">
+                <label for="webDescription">Describe what your website is about & any special wishes <span class="required">*</span></label>
+                <textarea id="webDescription" rows="4" required placeholder="Tell Plumine Coder about your business or personal site. E.g. 'I run an organic honey shop, I need a hero banner, product grid showing 4 varieties, pricing, and a button where people can order directly on my WhatsApp.'"></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="referenceLink">Reference / Sample Website Link (Optional)</label>
+                  <input type="url" id="referenceLink" placeholder="https://example.com or Instagram handle" />
+                </div>
+                <div class="form-field">
+                  <label for="deliveryUrgency">Target Completion Timeline</label>
+                  <select id="deliveryUrgency">
+                    <option value="Normal (2 to 3 days)">Normal (2 to 3 days)</option>
+                    <option value="Urgent (Within 24 hours)">Urgent (Within 24 hours)</option>
+                    <option value="Flexible (Take your time)">Flexible (Take your time)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Summary & Submission -->
+            <div class="request-summary-box">
+              <div class="price-callout">
+                <div class="callout-label">Estimated Total Price:</div>
+                <div class="callout-val">₹500 <span class="sub">(Single Website)</span></div>
+              </div>
+              
+              <button type="submit" class="btn-submit-request">
+                <i data-lucide="send"></i>
+                <span>Submit Web Request to Plumine Coder</span>
+              </button>
+            </div>
+            
+            <p class="form-footnote text-center">
+              <i data-lucide="shield"></i> Once submitted, your request is recorded in the Creator Portal, and you can also send it directly to Plumine Coder's WhatsApp in 1 click!
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section id="faq" class="section faq-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-tag">Got Questions?</span>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-subtitle">Everything you need to know about getting your website crafted for ₹500.</p>
+        </div>
+
+        <div class="faq-accordion">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Is the single website really ₹500 only?</span>
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              <p>Yes! Plumine Coder builds a complete, high-performance single-page website (Hero, About, Services/Products, Contact Form, WhatsApp button, and mobile responsiveness) for exactly ₹500.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>How does Plumine Coder get my request?</span>
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              <p>When you submit the request form, two things happen immediately:
+                <br>1. Your order is recorded in Plumine Coder's <strong>Creator Admin Portal</strong>.
+                <br>2. A pre-formatted WhatsApp message is generated with all your details, allowing you to click and send it directly to Plumine Coder's WhatsApp for instant response!
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>How long will it take to build my website?</span>
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              <p>Most single-page websites are ready within 24 to 48 hours after receiving your content (logo, text, and images).</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>How do I track my submitted request?</span>
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              <p>Simply log in with your Name & Phone Number. You can click <strong>"Track My Request"</strong> anytime to see all your submitted websites and their current status (Reviewing, In Progress, or Completed).</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Can I request changes or revisions?</span>
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              <p>Yes! Free revisions are included to fine-tune the colors, layout, and text until you are satisfied.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <div class="logo-icon"><i data-lucide="code-2"></i></div>
+          <span class="brand-name">Plumine<span class="highlight">Coder</span></span>
+        </div>
+        <p class="footer-desc">Professional, modern websites crafted with passion for just ₹500.</p>
+        <div class="footer-badges">
+          <span class="f-badge">₹500 / Website</span>
+          <span class="f-badge">Fast Turnaround</span>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <h4>Navigation</h4>
+        <a href="#features">Features</a>
+        <a href="#pricing">₹500 Offer</a>
+        <a href="#samples">Showcase</a>
+        <a href="#request-section">Send Request</a>
+      </div>
+
+      <div class="footer-links">
+        <h4>Client Tools</h4>
+        <a href="javascript:void(0)" onclick="openClientTrackModal()">Track My Request</a>
+        <a href="javascript:void(0)" onclick="openAuthModal()">Login / Account</a>
+        <a href="javascript:void(0)" onclick="openCreatorPortal()">Creator Admin Panel</a>
+      </div>
+
+      <div class="footer-contact">
+        <h4>Contact Plumine Coder</h4>
+        <p><i data-lucide="phone"></i> WhatsApp & Call Available</p>
+        <p><i data-lucide="shield-check"></i> 100% Satisfaction Guaranteed</p>
+        <button class="btn-footer-chat" onclick="openDirectWhatsApp()">
+          <i data-lucide="message-circle"></i> Chat on WhatsApp
+        </button>
+      </div>
+    </div>
+    <div class="footer-bottom text-center">
+      <p>© 2026 Plumine Coder. All rights reserved. Crafted for creators & businesses.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. LOGIN / AUTH MODAL (Name & Phone Number) -->
+  <div id="authModal" class="modal-backdrop">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon"><i data-lucide="user-plus"></i></div>
+          <div>
+            <h3 class="modal-title">Client Login</h3>
+            <p class="modal-desc">Enter your Name & Phone number to send and track requests.</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeAuthModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="modal-body">
+        <div class="form-field">
+          <label for="authName">Your Full Name <span class="required">*</span></label>
+          <input type="text" id="authName" required placeholder="e.g. Rahul Sharma" />
+        </div>
+
+        <div class="form-field">
+          <label for="authPhone">10-Digit Mobile / WhatsApp Number <span class="required">*</span></label>
+          <div class="phone-input-wrapper">
+            <span class="country-prefix">+91</span>
+            <input type="tel" id="authPhone" required pattern="[0-9]{10}" maxlength="10" placeholder="9876543210" />
+          </div>
+          <small class="field-hint">Used to associate your requests and communicate progress.</small>
+        </div>
+
+        <button type="submit" class="btn-modal-primary">
+          <span>Continue / Log In</span>
+          <i data-lucide="check"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. REQUEST SUBMISSION SUCCESS MODAL -->
+  <div id="successModal" class="modal-backdrop">
+    <div class="modal-card glass-panel success-card">
+      <div class="modal-header">
+        <div class="success-icon-badge">
+          <i data-lucide="check-circle-2"></i>
+        </div>
+        <button class="modal-close" onclick="closeSuccessModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <h3 class="success-title">Request Received Successfully!</h3>
+        <p class="success-text">Your website request has been logged. You can now send it directly to Plumine Coder on WhatsApp with one click for immediate priority review!</p>
+        
+        <div class="order-receipt-box">
+          <div class="receipt-row">
+            <span>Tracking ID:</span>
+            <strong id="successOrderId" class="highlight-id">#PLUM-1234</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Website Name:</span>
+            <strong id="successWebTitle">My Website</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Price:</span>
+            <strong class="success-price">₹500 Only</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Client:</span>
+            <span id="successClientName">Client Name</span>
+          </div>
+        </div>
+
+        <div class="modal-actions-stacked">
+          <!-- WhatsApp 1-Click Dispatch -->
+          <button id="btnSendWhatsApp" class="btn-whatsapp-dispatch" onclick="sendOrderToWhatsApp()">
+            <i data-lucide="message-circle"></i>
+            <span>Send Directly to Plumine Coder on WhatsApp</span>
+          </button>
+          
+          <button class="btn-secondary-action" onclick="copyOrderDetails()">
+            <i data-lucide="copy"></i> Copy Order Summary
+          </button>
+
+          <button class="btn-secondary-action" onclick="viewInTrackerFromSuccess()">
+            <i data-lucide="eye"></i> View in My Requests
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. CLIENT REQUEST TRACKER MODAL -->
+  <div id="trackModal" class="modal-backdrop">
+    <div class="modal-card glass-panel modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon"><i data-lucide="clock"></i></div>
+          <div>
+            <h3 class="modal-title">My Website Requests</h3>
+            <p class="modal-desc">Track status and review details of your requests.</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeClientTrackModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div id="clientRequestsList" class="requests-list">
+          <!-- Dynamic injected requests -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CREATOR / ADMIN DASHBOARD MODAL (HOW YOU GET & MANAGE REQUESTS) -->
+  <div id="creatorModal" class="modal-backdrop">
+    <div class="modal-card glass-panel modal-xl">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon admin-icon"><i data-lucide="shield-check"></i></div>
+          <div>
+            <div class="admin-badge-title">
+              <h3 class="modal-title">Plumine Coder Admin Hub</h3>
+              <span class="badge-role">Creator Access</span>
+            </div>
+            <p class="modal-desc">View, manage, call, or chat with all clients who submitted website requests.</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeCreatorPortal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="creator-hub-content">
+        <!-- Settings & Stats Bar -->
+        <div class="creator-stats-bar">
+          <div class="stat-card">
+            <span class="stat-num" id="statTotalReq">0</span>
+            <span class="stat-label">Total Requests</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num text-amber" id="statPendingReq">0</span>
+            <span class="stat-label">New / Pending</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num text-purple" id="statProgressReq">0</span>
+            <span class="stat-label">In Progress</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num text-emerald" id="statCompletedReq">0</span>
+            <span class="stat-label">Completed</span>
+          </div>
+        </div>
+
+        <!-- Admin Controls Bar -->
+        <div class="creator-controls-bar">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="adminSearchInput" placeholder="Search by Client Name, Phone or ID..." oninput="filterAdminRequests()" />
+          </div>
+
+          <div class="filter-group">
+            <select id="adminStatusFilter" onchange="filterAdminRequests()">
+              <option value="ALL">All Statuses</option>
+              <option value="New Request">New Request</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Ready for Review">Ready for Review</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn-admin-action" id="firebaseStatusBtn" onclick="openFirebaseSettingsModal()" title="Google Firebase Realtime Sync">
+              <i data-lucide="flame"></i> <span id="firebaseStatusText">Firebase: Active</span>
+            </button>
+            <button class="btn-admin-action" onclick="exportRequestsToCSV()" title="Download Excel / CSV of all requests">
+              <i data-lucide="download"></i> Export CSV
+            </button>
+            <button class="btn-admin-action" onclick="openCreatorSettingsModal()" title="Set your WhatsApp number">
+              <i data-lucide="settings"></i> WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <!-- Requests Table / Cards Container -->
+        <div class="admin-requests-container" id="adminRequestsContainer">
+          <!-- Dynamic admin rows injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. CREATOR WHATSAPP SETTINGS MODAL -->
+  <div id="creatorSettingsModal" class="modal-backdrop">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon"><i data-lucide="settings"></i></div>
+          <div>
+            <h3 class="modal-title">Creator Contact Settings</h3>
+            <p class="modal-desc">Set the WhatsApp number where you want clients to send requests.</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeCreatorSettingsModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-field">
+          <label for="creatorWhatsAppNumber">Your WhatsApp Number (with country code, e.g. 919535770964)</label>
+          <input type="text" id="creatorWhatsAppNumber" placeholder="919535770964" />
+          <small class="field-hint">When clients click "Send on WhatsApp", this number receives the formatted project brief.</small>
+        </div>
+
+        <button class="btn-modal-primary" onclick="saveCreatorSettings()">
+          <i data-lucide="save"></i> Save Number
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. GOOGLE FIREBASE CONFIGURATION MODAL -->
+  <div id="firebaseSettingsModal" class="modal-backdrop">
+    <div class="modal-card glass-panel modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">
+            <i data-lucide="flame"></i>
+          </div>
+          <div>
+            <h3 class="modal-title">Google Firebase Realtime Sync</h3>
+            <p class="modal-desc">Connect Firebase Firestore to store and sync requests cloud-wide in real-time.</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeFirebaseSettingsModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="firebase-info-box" style="background: rgba(0,0,0,0.35); padding: 1rem; border-radius: 12px; margin-bottom: 1.25rem; font-size: 0.88rem; border: 1px solid var(--border-subtle);">
+          <p>🔥 <strong>Real-time Cloud Sync is Enabled!</strong></p>
+          <p style="color: var(--text-muted); margin-top: 0.35rem;">Client requests are automatically pushed to cloud storage and mirrored locally so you never miss a client. You can also connect your own Firebase Project keys below:</p>
+        </div>
+
+        <div class="form-field">
+          <label for="firebaseApiKey">Firebase API Key</label>
+          <input type="text" id="firebaseApiKey" placeholder="AIzaSy..." />
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="firebaseProjectId">Project ID</label>
+            <input type="text" id="firebaseProjectId" placeholder="plumine-coder" />
+          </div>
+          <div class="form-field">
+            <label for="firebaseAppId">App ID</label>
+            <input type="text" id="firebaseAppId" placeholder="1:123456789:web:abcdef" />
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+          <button class="btn-modal-primary" onclick="saveFirebaseConfig()" style="margin-top:0;">
+            <i data-lucide="check"></i> Save & Connect Firebase
+          </button>
+          <button class="btn-secondary-action" onclick="testFirebaseSync()">
+            <i data-lucide="refresh-cw"></i> Test Cloud Sync
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. ADMIN ACCESS RESTRICTED MODAL (For non-Plumine visitors) -->
+  <div id="accessRestrictedModal" class="modal-backdrop">
+    <div class="modal-card glass-panel text-center">
+      <div class="modal-header" style="justify-content: center;">
+        <div class="modal-icon" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; width: 60px; height: 60px; border-radius: 50%;">
+          <i data-lucide="shield-alert"></i>
+        </div>
+      </div>
+      <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem;">Plumine Creator Access Only</h3>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+        The Creator Admin Hub is restricted. Only the Master Creator (<strong style="color:#fff;">Plumine</strong> with phone <strong style="color:#fbbf24;">9535770964</strong>) can access all client requests and orders.
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <button class="btn-modal-primary" onclick="quickLoginAsPlumine()" style="margin-top:0;">
+          <i data-lucide="key"></i> Log In as Plumine (9535770964)
+        </button>
+        <button class="btn-secondary-action" onclick="closeAccessRestrictedModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <i data-lucide="check" id="toastIcon"></i>
+    <span id="toastMsg">Notification message</span>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Initialize Lucide icons on page load
+    lucide.createIcons();
+  </script>
+</body>
+</html>
