@@ -14,16 +14,19 @@ const DEFAULT_CREATOR_WA = "919535770964";
 let currentUser = null;
 let currentActiveOrder = null;
 let firestoreDb = null;
+let realtimeDb = null;
 let firebaseInitialized = false;
 
-// Default Firebase Configuration (Ready for user customization or offline cloud emulator)
+// Your live Google Firebase Configuration
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDemoPlumineKey_FirebaseSync2026",
-  authDomain: "plumine-coder.firebaseapp.com",
-  projectId: "plumine-coder",
-  storageBucket: "plumine-coder.appspot.com",
-  messagingSenderId: "9535770964",
-  appId: "1:9535770964:web:plumine2026code"
+  apiKey: "AIzaSyCGvZ6AS72MuSHAdf--LeEGoIMbOhlZPcg",
+  authDomain: "pluminecoder78.firebaseapp.com",
+  databaseURL: "https://pluminecoder78-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "pluminecoder78",
+  storageBucket: "pluminecoder78.firebasestorage.app",
+  messagingSenderId: "588764000798",
+  appId: "1:588764000798:web:d9007d399a80518d7ab40f",
+  measurementId: "G-403J8MT0HW"
 };
 
 // Initialize on DOM ready
@@ -42,24 +45,39 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ==========================================================================
-   FIREBASE CLOUD INTEGRATION
+   FIREBASE CLOUD INTEGRATION (FIRESTORE & REALTIME DATABASE)
    ========================================================================== */
 function initFirebase() {
-  const savedConfig = localStorage.getItem("plumine_firebase_config");
-  const config = savedConfig ? JSON.parse(savedConfig) : DEFAULT_FIREBASE_CONFIG;
+  const config = DEFAULT_FIREBASE_CONFIG;
+  // Always update to live user config
+  localStorage.setItem("plumine_firebase_config", JSON.stringify(config));
 
   try {
     if (typeof firebase !== "undefined" && !firebase.apps.length) {
       firebase.initializeApp(config);
-      firestoreDb = firebase.firestore();
-      firebaseInitialized = true;
-      console.log("Firebase Firestore initialized successfully.");
+      
+      // Initialize Firestore if available
+      try {
+        firestoreDb = firebase.firestore();
+      } catch (e) {
+        console.log("Firestore setup notice:", e);
+      }
 
-      // Setup Real-time listener for incoming client requests
+      // Initialize Realtime Database if available
+      try {
+        realtimeDb = firebase.database();
+      } catch (e) {
+        console.log("Realtime Database setup notice:", e);
+      }
+
+      firebaseInitialized = true;
+      console.log("Google Firebase (pluminecoder78) connected successfully!");
+
+      // Setup Real-time listeners for incoming client requests
       setupRealtimeOrdersListener();
     }
   } catch (err) {
-    console.warn("Firebase running in offline/local mirror mode:", err);
+    console.warn("Firebase notice:", err);
     firebaseInitialized = false;
   }
 
@@ -81,50 +99,79 @@ function updateFirebaseUIStatus() {
 }
 
 function setupRealtimeOrdersListener() {
-  if (!firestoreDb) return;
+  // 1. Listen via Firestore
+  if (firestoreDb) {
+    try {
+      firestoreDb.collection("plumine_requests")
+        .orderBy("createdAt", "desc")
+        .onSnapshot((snapshot) => {
+          const cloudOrders = [];
+          snapshot.forEach((doc) => {
+            cloudOrders.push(doc.data());
+          });
+          if (cloudOrders.length > 0) mergeAndRefreshOrders(cloudOrders);
+        }, (err) => console.log("Firestore sync notice:", err.message));
+    } catch (e) {
+      console.log("Firestore listener notice:", e);
+    }
+  }
 
-  try {
-    firestoreDb.collection("plumine_requests")
-      .orderBy("createdAt", "desc")
-      .onSnapshot((snapshot) => {
-        const cloudOrders = [];
-        snapshot.forEach((doc) => {
-          cloudOrders.push(doc.data());
-        });
-
-        if (cloudOrders.length > 0) {
-          // Merge with local orders
-          const localOrders = getOrders();
-          const mergedMap = new Map();
-          
-          localOrders.forEach(o => mergedMap.set(o.id, o));
-          cloudOrders.forEach(o => mergedMap.set(o.id, o));
-          
-          const merged = Array.from(mergedMap.values()).sort((a, b) => 
-            new Date(b.createdAt) - new Date(a.createdAt)
-          );
-
-          localStorage.setItem("plumine_orders", JSON.stringify(merged));
-          updateCreatorBadge();
-          if (document.getElementById("creatorModal")?.classList.contains("show")) {
-            renderAdminHub();
-          }
+  // 2. Listen via Realtime Database
+  if (realtimeDb) {
+    try {
+      realtimeDb.ref("plumine_requests").on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const rtdbOrders = Object.values(data);
+          if (rtdbOrders.length > 0) mergeAndRefreshOrders(rtdbOrders);
         }
-      }, (err) => {
-        console.warn("Firestore snapshot notice:", err.message);
-      });
-  } catch (e) {
-    console.warn("Firestore listener setup notice:", e);
+      }, (err) => console.log("Realtime DB sync notice:", err.message));
+    } catch (e) {
+      console.log("Realtime DB listener notice:", e);
+    }
+  }
+}
+
+function mergeAndRefreshOrders(cloudOrders) {
+  const localOrders = getOrders();
+  const mergedMap = new Map();
+  
+  localOrders.forEach(o => mergedMap.set(o.id, o));
+  cloudOrders.forEach(o => mergedMap.set(o.id, o));
+  
+  const merged = Array.from(mergedMap.values()).sort((a, b) => 
+    new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
+  localStorage.setItem("plumine_orders", JSON.stringify(merged));
+  updateCreatorBadge();
+  if (document.getElementById("creatorModal")?.classList.contains("show")) {
+    renderAdminHub();
   }
 }
 
 async function syncOrderToFirebase(order) {
-  if (!firestoreDb || !firebaseInitialized) return;
-  try {
-    await firestoreDb.collection("plumine_requests").doc(order.id).set(order);
-    console.log(`Order ${order.id} synced to Google Firebase Firestore.`);
-  } catch (err) {
-    console.warn("Could not sync to cloud Firestore immediately (saved locally):", err.message);
+  if (!firebaseInitialized) return;
+
+  // Sync to Firestore
+  if (firestoreDb) {
+    try {
+      await firestoreDb.collection("plumine_requests").doc(order.id).set(order);
+      console.log(`Order ${order.id} synced to Google Cloud Firestore.`);
+    } catch (err) {
+      console.log("Firestore sync notice:", err.message);
+    }
+  }
+
+  // Sync to Realtime Database
+  if (realtimeDb) {
+    try {
+      const cleanKey = order.id.replace(/[^a-zA-Z0-9_-]/g, "");
+      await realtimeDb.ref("plumine_requests/" + cleanKey).set(order);
+      console.log(`Order ${order.id} synced to Google Cloud Realtime Database.`);
+    } catch (err) {
+      console.log("Realtime Database sync notice:", err.message);
+    }
   }
 }
 
