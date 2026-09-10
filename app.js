@@ -91,10 +91,10 @@ function updateFirebaseUIStatus() {
   if (!statusText) return;
 
   if (firebaseInitialized) {
-    statusText.textContent = "Firebase: Cloud Live";
+    statusText.textContent = "Sync: Live";
     if (statusBtn) statusBtn.style.color = "#34d399";
   } else {
-    statusText.textContent = "Firebase: Ready";
+    statusText.textContent = "Sync: Ready";
     if (statusBtn) statusBtn.style.color = "#fbbf24";
   }
 }
@@ -217,14 +217,14 @@ function saveFirebaseConfig() {
 
   localStorage.setItem("plumine_firebase_config", JSON.stringify(config));
   closeFirebaseSettingsModal();
-  showToast("Firebase Cloud configuration updated successfully!", "check");
+  showToast("Database configuration updated successfully!", "check");
   setTimeout(() => location.reload(), 1000);
 }
 
 function testFirebaseSync() {
-  showToast("Testing Firebase Cloud connection...", "refresh-cw");
+  showToast("Testing database connection...", "refresh-cw");
   setTimeout(() => {
-    showToast("Google Firebase Firestore is active and ready to receive orders!", "check");
+    showToast("Real-time Database is live and ready to receive orders!", "check");
   }, 1000);
 }
 

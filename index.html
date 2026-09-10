@@ -470,8 +470,8 @@
                   <span><i data-lucide="image"></i> Photo / Product Gallery</span>
                 </label>
                 <label class="checkbox-pill">
-                  <input type="checkbox" name="reqFeatures" value="Google Map Embed" />
-                  <span><i data-lucide="map-pin"></i> Location / Google Map</span>
+                  <input type="checkbox" name="reqFeatures" value="Location / Map Embed" />
+                  <span><i data-lucide="map-pin"></i> Location / Map Embed</span>
                 </label>
                 <label class="checkbox-pill">
                   <input type="checkbox" name="reqFeatures" value="Social Media Links" checked />
@@ -859,8 +859,8 @@
           </div>
 
           <div class="action-buttons">
-            <button class="btn-admin-action" id="firebaseStatusBtn" onclick="openFirebaseSettingsModal()" title="Google Firebase Realtime Sync">
-              <i data-lucide="flame"></i> <span id="firebaseStatusText">Firebase: Active</span>
+            <button class="btn-admin-action" id="firebaseStatusBtn" onclick="openFirebaseSettingsModal()" title="Live Database Sync">
+              <i data-lucide="zap"></i> <span id="firebaseStatusText">Sync: Live</span>
             </button>
             <button class="btn-admin-action" onclick="exportRequestsToCSV()" title="Download Excel / CSV of all requests">
               <i data-lucide="download"></i> Export CSV
@@ -907,17 +907,17 @@
     </div>
   </div>
 
-  <!-- 6. GOOGLE FIREBASE CONFIGURATION MODAL -->
+  <!-- 6. REALTIME DATABASE CONFIGURATION MODAL -->
   <div id="firebaseSettingsModal" class="modal-backdrop">
     <div class="modal-card glass-panel modal-lg">
       <div class="modal-header">
         <div class="modal-title-group">
-          <div class="modal-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">
-            <i data-lucide="flame"></i>
+          <div class="modal-icon" style="background: rgba(168, 85, 247, 0.2); color: #c084fc;">
+            <i data-lucide="database"></i>
           </div>
           <div>
-            <h3 class="modal-title">Google Firebase Realtime Sync</h3>
-            <p class="modal-desc">Connect Firebase Firestore to store and sync requests cloud-wide in real-time.</p>
+            <h3 class="modal-title">Real-time Database Sync</h3>
+            <p class="modal-desc">Manage real-time database connection to receive customer orders instantly.</p>
           </div>
         </div>
         <button class="modal-close" onclick="closeFirebaseSettingsModal()"><i data-lucide="x"></i></button>
@@ -925,12 +925,12 @@
 
       <div class="modal-body">
         <div class="firebase-info-box" style="background: rgba(0,0,0,0.35); padding: 1rem; border-radius: 12px; margin-bottom: 1.25rem; font-size: 0.88rem; border: 1px solid var(--border-subtle);">
-          <p>🔥 <strong>Real-time Cloud Sync is Enabled!</strong></p>
-          <p style="color: var(--text-muted); margin-top: 0.35rem;">Client requests are automatically pushed to cloud storage and mirrored locally so you never miss a client. You can also connect your own Firebase Project keys below:</p>
+          <p>⚡ <strong>Real-time Database Sync is Active!</strong></p>
+          <p style="color: var(--text-muted); margin-top: 0.35rem;">Customer requests are automatically synchronized in real-time across your devices so you never miss a client. You can also customize your project keys below:</p>
         </div>
 
         <div class="form-field">
-          <label for="firebaseApiKey">Firebase API Key</label>
+          <label for="firebaseApiKey">API Key</label>
           <input type="text" id="firebaseApiKey" placeholder="AIzaSy..." />
         </div>
 
@@ -947,10 +947,10 @@
 
         <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
           <button class="btn-modal-primary" onclick="saveFirebaseConfig()" style="margin-top:0;">
-            <i data-lucide="check"></i> Save & Connect Firebase
+            <i data-lucide="check"></i> Save & Connect Database
           </button>
           <button class="btn-secondary-action" onclick="testFirebaseSync()">
-            <i data-lucide="refresh-cw"></i> Test Cloud Sync
+            <i data-lucide="refresh-cw"></i> Test Live Sync
           </button>
         </div>
       </div>
