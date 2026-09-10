@@ -235,6 +235,53 @@
             </div>
           </div>
         </div>
+
+        <!-- Agency vs Plumine Coder Comparison Table -->
+        <div class="comparison-wrapper glass-panel" style="margin-top: 3.5rem; padding: 2rem;">
+          <div class="text-center" style="margin-bottom: 1.5rem;">
+            <h3 style="font-family: var(--font-heading); font-size: 1.5rem;">Why Plumine Coder Beats Typical Agencies</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">See why hundreds choose our transparent ₹500 creation model over bloated agency packages.</p>
+          </div>
+
+          <div class="table-responsive" style="overflow-x: auto;">
+            <table class="comparison-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--border-subtle); color: var(--text-dim);">
+                  <th style="padding: 0.75rem 1rem;">Feature / Aspect</th>
+                  <th style="padding: 0.75rem 1rem; color: #fbbf24; font-weight: 700;">Plumine Coder</th>
+                  <th style="padding: 0.75rem 1rem; color: #94a3b8;">Traditional Agencies</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <td style="padding: 0.85rem 1rem;"><strong>Cost for Single Website</strong></td>
+                  <td style="padding: 0.85rem 1rem; color: #34d399; font-weight: 800;">₹500 Flat (One-time)</td>
+                  <td style="padding: 0.85rem 1rem; color: #f87171;">₹12,000 – ₹25,000+</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <td style="padding: 0.85rem 1rem;"><strong>Delivery Turnaround</strong></td>
+                  <td style="padding: 0.85rem 1rem; color: #34d399; font-weight: 700;">24 – 48 Hours</td>
+                  <td style="padding: 0.85rem 1rem; color: #94a3b8;">3 to 6 Weeks</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <td style="padding: 0.85rem 1rem;"><strong>Direct Developer Access</strong></td>
+                  <td style="padding: 0.85rem 1rem; color: #34d399; font-weight: 700;">Direct WhatsApp & Call</td>
+                  <td style="padding: 0.85rem 1rem; color: #94a3b8;">Account Managers / Ticket queues</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <td style="padding: 0.85rem 1rem;"><strong>WhatsApp Order / Chat Integration</strong></td>
+                  <td style="padding: 0.85rem 1rem; color: #34d399; font-weight: 700;">Included Free</td>
+                  <td style="padding: 0.85rem 1rem; color: #94a3b8;">Extra ₹2,500 Add-on</td>
+                </tr>
+                <tr>
+                  <td style="padding: 0.85rem 1rem;"><strong>Free Revisions & Tweaks</strong></td>
+                  <td style="padding: 0.85rem 1rem; color: #34d399; font-weight: 700;">Included until Satisfied</td>
+                  <td style="padding: 0.85rem 1rem; color: #94a3b8;">Charged per revision hour</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -461,6 +508,49 @@
                   </select>
                 </div>
               </div>
+            <!-- STEP 4: Interactive Live Website Previewer -->
+            <div class="form-group-block live-preview-wrapper" style="background: rgba(14, 8, 25, 0.7); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed rgba(168, 85, 247, 0.35);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 class="form-block-title" style="margin-bottom: 0;">
+                  <span class="step-badge" style="background: #10b981;"><i data-lucide="eye" style="width:14px;height:14px;"></i></span>
+                  <span>Live Website Preview</span>
+                </h3>
+                <span style="font-size: 0.75rem; color: #34d399; background: rgba(16, 185, 129, 0.15); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 700;">
+                  ● Updates Live as You Type
+                </span>
+              </div>
+
+              <!-- Interactive Mock Browser Window -->
+              <div id="liveBrowserCard" class="live-browser-card" style="background: #0d0716; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                <div class="mockup-header" style="background: #160b24; padding: 0.5rem 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+                  <span class="window-dot red"></span>
+                  <span class="window-dot yellow"></span>
+                  <span class="window-dot green"></span>
+                  <span id="previewUrlBar" class="mockup-url" style="font-size: 0.72rem; color: #a855f7;">https://yourwebsite.com</span>
+                </div>
+
+                <div id="previewCanvasHero" style="padding: 1.75rem 1.25rem; text-align: center; background: linear-gradient(180deg, rgba(59, 7, 100, 0.35), transparent); transition: var(--transition);">
+                  <span id="previewCategoryTag" style="font-size: 0.7rem; text-transform: uppercase; background: rgba(255,255,255,0.1); padding: 0.15rem 0.55rem; border-radius: 9999px; color: #cbd5e1; letter-spacing: 0.05em;">Business Profile</span>
+                  <h4 id="previewSiteTitle" style="font-family: var(--font-heading); font-size: 1.5rem; margin: 0.6rem 0 0.3rem; color: #fff;">Your Business Name</h4>
+                  <p id="previewTagline" style="font-size: 0.82rem; color: #94a3b8; max-width: 420px; margin: 0 auto 1.2rem;">Modern, fast & mobile-friendly website crafted for only ₹500.</p>
+                  
+                  <div id="previewCtaButtons" style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+                    <span id="previewWaBtn" style="background: #25d366; color: #000; font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                      <i data-lucide="message-circle" style="width:12px;height:12px;"></i> Order on WhatsApp
+                    </span>
+                    <span id="previewContactBtn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                      <i data-lucide="mail" style="width:12px;height:12px;"></i> Contact Us
+                    </span>
+                  </div>
+
+                  <div style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.4rem;">Included Features:</div>
+                  <div id="previewFeaturesGrid" style="display: flex; justify-content: center; gap: 0.4rem; flex-wrap: wrap;">
+                    <span class="f-badge">WhatsApp Button</span>
+                    <span class="f-badge">Mobile Responsive</span>
+                    <span class="f-badge">Contact Form</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Price Summary & Submission -->
@@ -667,6 +757,12 @@
         </div>
 
         <div class="modal-actions-stacked">
+          <!-- Instant UPI Payment Option -->
+          <button class="btn-upi-pay" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800; padding: 0.85rem; border-radius: var(--radius-md); border: none; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: var(--transition);" onclick="openUpiPaymentModal()">
+            <i data-lucide="qr-code"></i>
+            <span>Pay ₹500 via UPI (GPay / PhonePe / Paytm)</span>
+          </button>
+
           <!-- WhatsApp 1-Click Dispatch -->
           <button id="btnSendWhatsApp" class="btn-whatsapp-dispatch" onclick="sendOrderToWhatsApp()">
             <i data-lucide="message-circle"></i>
@@ -880,6 +976,94 @@
         <button class="btn-secondary-action" onclick="closeAccessRestrictedModal()">
           Close
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. INSTANT UPI PAYMENT MODAL (₹500) -->
+  <div id="upiModal" class="modal-backdrop">
+    <div class="modal-card glass-panel text-center">
+      <div class="modal-header">
+        <div class="modal-title-group" style="text-align: left;">
+          <div class="modal-icon" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">
+            <i data-lucide="qr-code"></i>
+          </div>
+          <div>
+            <h3 class="modal-title">Pay ₹500 via UPI</h3>
+            <p class="modal-desc">Scan with any UPI App (GPay, PhonePe, Paytm, BHIM)</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeUpiPaymentModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Dynamic QR Code Card -->
+        <div class="upi-qr-card" style="background: #fff; padding: 1.25rem; border-radius: 14px; display: inline-block; margin-bottom: 1.25rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+          <img id="upiQrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi%3A%2F%2Fpay%3Fpa%3D9535770964%40upi%26pn%3DPlumine%2520Coder%26am%3D500%26cu%3DINR" alt="UPI QR Code" style="width: 170px; height: 170px; display: block; margin: 0 auto;" />
+          <span style="color: #000; font-size: 0.8rem; font-weight: 700; display: block; margin-top: 0.5rem;">Amount: ₹500.00</span>
+        </div>
+
+        <div class="upi-details-card" style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem; text-align: left;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.88rem;">
+            <span>Plumine Coder UPI ID:</span>
+            <strong style="color: #fbbf24;" id="upiIdText">9535770964@upi</strong>
+          </div>
+          <button class="btn-text" style="width: 100%; justify-content: center;" onclick="copyUpiId()">
+            <i data-lucide="copy"></i> Copy UPI ID
+          </button>
+        </div>
+
+        <div class="form-field text-left">
+          <label for="upiUtrNumber" style="font-size: 0.85rem; color: #e2e8f0;">UPI Reference / UTR Number (12 Digits)</label>
+          <input type="text" id="upiUtrNumber" placeholder="e.g. 423589123456" maxlength="16" />
+          <small class="field-hint">Found in your Google Pay / PhonePe transaction details.</small>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+          <button class="btn-modal-primary" onclick="submitUpiPaymentProof()" style="margin-top:0;">
+            <i data-lucide="check-circle"></i> Confirm Payment & Save Receipt
+          </button>
+          <button class="btn-secondary-action" onclick="downloadInvoiceReceipt()">
+            <i data-lucide="file-text"></i> Download Official Invoice (PDF/Print)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. CREATOR QUICK-REPLY WHATSAPP TEMPLATES MODAL -->
+  <div id="quickReplyModal" class="modal-backdrop">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon" style="background: rgba(37, 211, 102, 0.2); color: #25d366;">
+            <i data-lucide="message-square"></i>
+          </div>
+          <div>
+            <h3 class="modal-title">WhatsApp Quick Update</h3>
+            <p class="modal-desc">Send 1-click status update to <strong id="quickReplyClientName">Client</strong></p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeQuickReplyModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <button class="btn-secondary-action" style="text-align: left; padding: 0.85rem;" onclick="sendQuickTemplate('accepted')">
+            <div style="font-weight: 700; color: #34d399; margin-bottom: 0.2rem;">✅ 1. Order Accepted & In Progress</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">"Hi! Your website request is approved and development has started."</div>
+          </button>
+
+          <button class="btn-secondary-action" style="text-align: left; padding: 0.85rem;" onclick="sendQuickTemplate('preview')">
+            <div style="font-weight: 700; color: #38bdf8; margin-bottom: 0.2rem;">🎨 2. Design Preview Ready</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">"Hi! Your website draft is ready for you to preview and review."</div>
+          </button>
+
+          <button class="btn-secondary-action" style="text-align: left; padding: 0.85rem;" onclick="sendQuickTemplate('delivered')">
+            <div style="font-weight: 700; color: #fbbf24; margin-bottom: 0.2rem;">🚀 3. Final Website Delivered</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">"Hi! Your website is 100% complete and published! Check it out."</div>
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   checkAuthSession();
   updateCreatorBadge();
+  initLivePreviewListener();
 
   // Suddenly ask for login when first entering if not yet authenticated
   if (!currentUser) {
@@ -143,10 +144,20 @@ function mergeAndRefreshOrders(cloudOrders) {
     new Date(b.createdAt) - new Date(a.createdAt)
   );
 
+  const hasNewOrders = merged.length > localOrders.length;
+
   localStorage.setItem("plumine_orders", JSON.stringify(merged));
   updateCreatorBadge();
   if (document.getElementById("creatorModal")?.classList.contains("show")) {
     renderAdminHub();
+  }
+
+  if (hasNewOrders && localOrders.length > 0) {
+    playOrderChime();
+    const newest = merged[0];
+    if (isMasterAdmin(currentUser)) {
+      showToast(`🔔 New Website Request: ${newest.title} from ${newest.clientName}!`, "bell");
+    }
   }
 }
 
@@ -621,11 +632,14 @@ function openClientTrackModal() {
           <div>${getStatusPill(order.status)}</div>
         </div>
 
+        <!-- 5-Stage Visual Progress Timeline -->
+        ${getOrderTimelineHtml(order.status)}
+
         <div class="req-details-grid">
           <div><strong>Type:</strong> ${escapeHtml(order.category)}</div>
-          <div><strong>Agreed Price:</strong> <span style="color:#fbbf24; font-weight:700;">₹500</span></div>
+          <div><strong>Cost:</strong> <span style="color:#fbbf24; font-weight:700;">₹500</span></div>
+          <div><strong>Payment:</strong> ${order.paymentStatus === 'Paid' ? '<span style="color:#34d399; font-weight:700;">✓ Paid (₹500)</span>' : '<span style="color:#f59e0b; font-weight:600;">Pending</span>'}</div>
           <div><strong>Timeline:</strong> ${escapeHtml(order.urgency)}</div>
-          <div><strong>Submitted:</strong> ${new Date(order.createdAt).toLocaleDateString()}</div>
         </div>
 
         <div class="req-notes">
@@ -633,7 +647,35 @@ function openClientTrackModal() {
           <strong>Brief:</strong> ${escapeHtml(order.description)}
         </div>
 
-        <div style="margin-top: 0.85rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
+        <!-- Client Revisions Section -->
+        <div style="margin-top: 0.85rem; background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 8px;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: #cbd5e1; margin-bottom: 0.4rem;">
+            💬 Need changes or revisions? Send note directly to Plumine:
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="revInput_${order.id}" placeholder="e.g. Change banner font to bold, add Instagram link..." style="flex:1; background: rgba(255,255,255,0.06); border: 1px solid var(--border-subtle); color:#fff; padding:0.4rem 0.65rem; border-radius:6px; font-size:0.82rem;" />
+            <button class="btn-sm-auth" onclick="submitClientRevision('${order.id}')" style="padding:0.4rem 0.75rem; font-size:0.8rem;">
+              Send Note
+            </button>
+          </div>
+          ${order.revisions && order.revisions.length ? `
+            <div style="margin-top: 0.5rem; font-size: 0.78rem; color: #a855f7;">
+              <strong>Notes Sent:</strong>
+              ${order.revisions.map(r => `<div style="color:#e2e8f0; margin-top:2px;">• ${escapeHtml(r)}</div>`).join('')}
+            </div>
+          ` : ''}
+        </div>
+
+        <div style="margin-top: 0.85rem; display: flex; gap: 0.5rem; justify-content: flex-end; flex-wrap: wrap;">
+          ${order.paymentStatus !== 'Paid' ? `
+            <button class="btn-text" style="color: #fbbf24; border-color: rgba(245,158,11,0.4);" onclick="openUpiPaymentModalForOrder('${order.id}')">
+              <i data-lucide="qr-code"></i> Pay ₹500 via UPI
+            </button>
+          ` : `
+            <button class="btn-text" style="color: #34d399;" onclick="downloadInvoiceReceipt('${order.id}')">
+              <i data-lucide="file-text"></i> Download Receipt
+            </button>
+          `}
           <button class="btn-text" onclick='resendWhatsApp("${order.id}")'>
             <i data-lucide="message-circle"></i> Send on WhatsApp
           </button>
@@ -745,9 +787,17 @@ function filterAdminRequests() {
           </div>
 
           <div class="admin-contact-actions">
+            <!-- Payment Status Toggle -->
+            <button class="btn-admin-contact" style="background:${order.paymentStatus === 'Paid' ? 'rgba(16,185,129,0.25)' : 'rgba(245,158,11,0.25)'}; color:${order.paymentStatus === 'Paid' ? '#34d399' : '#fbbf24'}; border: 1px solid ${order.paymentStatus === 'Paid' ? '#10b981' : '#f59e0b'};" onclick="toggleOrderPaymentStatus('${order.id}')" title="Click to toggle Payment Received status">
+              <i data-lucide="${order.paymentStatus === 'Paid' ? 'check' : 'credit-card'}"></i> ${order.paymentStatus === 'Paid' ? 'Paid (₹500)' : 'Mark Paid'}
+            </button>
+            <!-- Quick WhatsApp Template -->
+            <button class="btn-admin-contact" style="background: rgba(168,85,247,0.25); color: #c084fc; border: 1px solid #a855f7;" onclick="openQuickReplyModal('${order.id}')" title="Send pre-made status update on WhatsApp">
+              <i data-lucide="zap"></i> Quick Reply
+            </button>
             <!-- 1-Click WhatsApp Client -->
             <a href="https://wa.me/91${order.clientPhone}?text=${encodeURIComponent(`Hi ${order.clientName}! This is Plumine Coder regarding your website request (${order.id} - ${order.title}).`)}" target="_blank" class="btn-admin-contact wa">
-              <i data-lucide="message-circle"></i> Chat Client
+              <i data-lucide="message-circle"></i> Chat
             </a>
             <!-- Call Client -->
             <a href="tel:+91${order.clientPhone}" class="btn-admin-contact call">
@@ -760,6 +810,7 @@ function filterAdminRequests() {
           <div class="admin-spec-row">
             <span><strong>Scope:</strong> ${escapeHtml(order.scope)}</span>
             <span><strong>Price:</strong> <strong style="color:#fbbf24;">₹500</strong></span>
+            <span><strong>Payment:</strong> <strong style="color:${order.paymentStatus === 'Paid' ? '#34d399' : '#f59e0b'};">${order.paymentStatus || 'Pending'}</strong></span>
             <span><strong>Urgency:</strong> ${escapeHtml(order.urgency)}</span>
           </div>
           <div class="admin-spec-row">
@@ -773,6 +824,13 @@ function filterAdminRequests() {
             <strong>Client Brief:</strong> ${escapeHtml(order.description)}
           </div>
           ${order.referenceLink ? `<div style="font-size: 0.8rem; color:#38bdf8; margin-top: 0.3rem;"><strong>Reference:</strong> <a href="${order.referenceLink}" target="_blank" style="color:#38bdf8;">${order.referenceLink}</a></div>` : ""}
+          ${order.revisions && order.revisions.length ? `
+            <div style="margin-top: 0.6rem; background: rgba(168,85,247,0.15); border-left: 3px solid #a855f7; padding: 0.5rem; border-radius: 4px; font-size: 0.82rem;">
+              <strong style="color: #c084fc;">Client Revisions / Feedback:</strong>
+              ${order.revisions.map(r => `<div style="color: #f8fafc; margin-top: 2px;">• ${escapeHtml(r)}</div>`).join('')}
+            </div>
+          ` : ''}
+          ${order.utrNumber ? `<div style="font-size: 0.8rem; color: #34d399; margin-top: 0.4rem;"><strong>Payment Ref/UTR:</strong> ${escapeHtml(order.utrNumber)}</div>` : ''}
         </div>
 
         <div class="admin-order-footer">
@@ -940,4 +998,354 @@ function escapeHtml(string) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+/* ==========================================================================
+   FEATURE 1: INTERACTIVE LIVE WEBSITE PREVIEW BUILDER
+   ========================================================================== */
+function initLivePreviewListener() {
+  const webTitle = document.getElementById("webTitle");
+  const webCategory = document.getElementById("webCategory");
+  const colorTheme = document.getElementById("colorTheme");
+  const featureCheckboxes = document.querySelectorAll('input[name="reqFeatures"]');
+
+  if (webTitle) webTitle.addEventListener("input", updateLivePreview);
+  if (webCategory) webCategory.addEventListener("change", updateLivePreview);
+  if (colorTheme) colorTheme.addEventListener("change", updateLivePreview);
+  featureCheckboxes.forEach(cb => cb.addEventListener("change", updateLivePreview));
+}
+
+function updateLivePreview() {
+  const title = document.getElementById("webTitle")?.value.trim() || "Your Business Name";
+  const category = document.getElementById("webCategory")?.value || "Business Profile";
+  const theme = document.getElementById("colorTheme")?.value || "Plumine Dark & Neon Violet";
+
+  const siteTitleEl = document.getElementById("previewSiteTitle");
+  const catTagEl = document.getElementById("previewCategoryTag");
+  const urlBarEl = document.getElementById("previewUrlBar");
+  const heroCanvas = document.getElementById("previewCanvasHero");
+  const featuresGrid = document.getElementById("previewFeaturesGrid");
+
+  if (siteTitleEl) siteTitleEl.textContent = title;
+  if (catTagEl) catTagEl.textContent = category;
+  if (urlBarEl) {
+    const slug = title.toLowerCase().replace(/[^a-z0-9]/g, "");
+    urlBarEl.textContent = `https://${slug || "yourwebsite"}.com`;
+  }
+
+  // Update theme gradient
+  if (heroCanvas) {
+    if (theme.includes("Violet") || theme.includes("Plumine")) {
+      heroCanvas.style.background = "linear-gradient(180deg, rgba(59, 7, 100, 0.45), transparent)";
+    } else if (theme.includes("Blue") || theme.includes("Clean")) {
+      heroCanvas.style.background = "linear-gradient(180deg, rgba(30, 58, 138, 0.45), transparent)";
+    } else if (theme.includes("Gold")) {
+      heroCanvas.style.background = "linear-gradient(180deg, rgba(180, 83, 9, 0.45), transparent)";
+    } else if (theme.includes("Orange") || theme.includes("Vibrant")) {
+      heroCanvas.style.background = "linear-gradient(180deg, rgba(234, 88, 12, 0.45), transparent)";
+    } else if (theme.includes("Green") || theme.includes("Nature")) {
+      heroCanvas.style.background = "linear-gradient(180deg, rgba(16, 185, 129, 0.45), transparent)";
+    } else {
+      heroCanvas.style.background = "linear-gradient(180deg, rgba(88, 28, 135, 0.45), transparent)";
+    }
+  }
+
+  // Update features preview
+  if (featuresGrid) {
+    const checked = [];
+    document.querySelectorAll('input[name="reqFeatures"]:checked').forEach(cb => checked.push(cb.value));
+    if (checked.length === 0) {
+      featuresGrid.innerHTML = `<span style="font-size:0.75rem; color:#94a3b8;">No additional features selected</span>`;
+    } else {
+      featuresGrid.innerHTML = checked.map(f => `<span class="f-badge">${escapeHtml(f)}</span>`).join("");
+    }
+  }
+}
+
+/* ==========================================================================
+   FEATURE 2: AUDIO SYNTHESIZER CHIME (NO AUDIO FILES REQUIRED)
+   ========================================================================== */
+function playOrderChime() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+
+    const now = ctx.currentTime;
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(587.33, now); // D5
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(880.00, now + 0.12); // A5
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc1.start(now);
+    osc1.stop(now + 0.15);
+    osc2.start(now + 0.12);
+    osc2.stop(now + 0.5);
+  } catch (e) {
+    console.log("Audio chime note:", e);
+  }
+}
+
+/* ==========================================================================
+   FEATURE 3: 5-STAGE VISUAL TIMELINE & REVISION HANDLING
+   ========================================================================== */
+function getOrderTimelineHtml(status) {
+  const steps = [
+    { label: "1. Placed", key: "New Request" },
+    { label: "2. Specs Confirmed", key: "Specs Confirmed" },
+    { label: "3. Designing", key: "In Progress" },
+    { label: "4. Review Draft", key: "Ready for Review" },
+    { label: "5. Delivered", key: "Completed" }
+  ];
+
+  let activeIndex = 0;
+  if (status === "In Progress") activeIndex = 2;
+  else if (status === "Ready for Review") activeIndex = 3;
+  else if (status === "Completed") activeIndex = 4;
+
+  return `
+    <div class="order-stepper" style="display: flex; justify-content: space-between; position: relative; margin: 1.25rem 0 1rem; padding: 0 0.5rem;">
+      <div style="position: absolute; top: 12px; left: 20px; right: 20px; height: 3px; background: rgba(255,255,255,0.1); z-index: 0;"></div>
+      <div style="position: absolute; top: 12px; left: 20px; width: ${(activeIndex / 4) * 100}%; height: 3px; background: #10b981; z-index: 0; transition: width 0.4s ease;"></div>
+      ${steps.map((step, idx) => `
+        <div style="position: relative; z-index: 1; text-align: center;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; background: ${idx <= activeIndex ? '#10b981' : '#1e1333'}; border: 2px solid ${idx <= activeIndex ? '#34d399' : '#475569'}; color: #fff; font-size: 0.7rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.3rem;">
+            ${idx < activeIndex ? '✓' : idx + 1}
+          </div>
+          <span style="font-size: 0.7rem; color: ${idx <= activeIndex ? '#e2e8f0' : '#64748b'}; font-weight: ${idx === activeIndex ? '700' : '500'};">${step.label}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function submitClientRevision(orderId) {
+  const input = document.getElementById(`revInput_${orderId}`);
+  if (!input) return;
+  const note = input.value.trim();
+  if (!note) {
+    showToast("Please enter your revision note.", "alert-triangle");
+    return;
+  }
+
+  const orders = getOrders();
+  const order = orders.find(o => o.id === orderId);
+  if (order) {
+    if (!order.revisions) order.revisions = [];
+    order.revisions.push(`${note} (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
+    saveOrders(orders);
+    syncOrderToFirebase(order);
+    input.value = "";
+    openClientTrackModal();
+    showToast("Revision note sent to Plumine Coder!", "check");
+  }
+}
+
+/* ==========================================================================
+   FEATURE 4: UPI PAYMENT & INVOICE RECEIPT GENERATOR
+   ========================================================================== */
+let activePaymentOrderId = null;
+
+function openUpiPaymentModal() {
+  activePaymentOrderId = currentActiveOrder ? currentActiveOrder.id : null;
+  const modal = document.getElementById("upiModal");
+  modal.classList.add("show");
+  if (window.lucide) lucide.createIcons();
+}
+
+function openUpiPaymentModalForOrder(orderId) {
+  activePaymentOrderId = orderId;
+  const modal = document.getElementById("upiModal");
+  modal.classList.add("show");
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeUpiPaymentModal() {
+  document.getElementById("upiModal").classList.remove("show");
+}
+
+function copyUpiId() {
+  navigator.clipboard.writeText("9535770964@upi").then(() => {
+    showToast("UPI ID (9535770964@upi) copied!", "check");
+  });
+}
+
+function submitUpiPaymentProof() {
+  const utr = document.getElementById("upiUtrNumber")?.value.trim();
+  if (!utr || utr.length < 8) {
+    showToast("Please enter a valid 12-digit UPI Reference / UTR Number.", "alert-triangle");
+    return;
+  }
+
+  if (activePaymentOrderId) {
+    const orders = getOrders();
+    const order = orders.find(o => o.id === activePaymentOrderId);
+    if (order) {
+      order.utrNumber = utr;
+      order.paymentStatus = "Paid";
+      saveOrders(orders);
+      syncOrderToFirebase(order);
+    }
+  }
+
+  showToast("Payment verified! Receipt generated.", "check");
+  closeUpiPaymentModal();
+  downloadInvoiceReceipt(activePaymentOrderId);
+}
+
+function downloadInvoiceReceipt(orderId) {
+  const orders = getOrders();
+  const targetId = orderId || (currentActiveOrder ? currentActiveOrder.id : null);
+  const order = orders.find(o => o.id === targetId) || currentActiveOrder;
+
+  if (!order) {
+    showToast("Order details not found for invoice.", "alert-triangle");
+    return;
+  }
+
+  const invoiceHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Invoice - ${order.id}</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; color: #1e293b; }
+        .invoice-card { max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .head { display: flex; justify-content: space-between; border-bottom: 2px solid #8b5cf6; padding-bottom: 15px; }
+        .logo { font-size: 22px; font-weight: 800; color: #7c3aed; }
+        .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+        .total { font-size: 20px; font-weight: 800; color: #059669; }
+        .badge { background: #dcfce7; color: #15803d; padding: 3px 10px; border-radius: 9999px; font-weight: 700; font-size: 12px; }
+        .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #94a3b8; }
+        @media print { .no-print { display: none; } }
+      </style>
+    </head>
+    <body>
+      <div class="invoice-card">
+        <div class="head">
+          <div>
+            <div class="logo">Plumine Coder</div>
+            <div style="font-size: 13px; color: #64748b;">Web Creation Studio • WhatsApp: +91 9535770964</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 18px; font-weight: 700;">OFFICIAL RECEIPT</div>
+            <div style="font-size: 12px; color: #64748b;">Order: ${order.id}</div>
+            <div style="font-size: 12px; color: #64748b;">Date: ${new Date(order.createdAt).toLocaleDateString()}</div>
+          </div>
+        </div>
+
+        <div style="margin: 20px 0;">
+          <div style="font-size: 13px; color: #64748b;">Billed To:</div>
+          <div style="font-size: 16px; font-weight: 700;">${order.clientName}</div>
+          <div style="font-size: 13px; color: #64748b;">+91 ${order.clientPhone}</div>
+        </div>
+
+        <div class="row">
+          <span>Website Item:</span>
+          <strong>${order.title} (${order.category})</strong>
+        </div>
+        <div class="row">
+          <span>Package:</span>
+          <span>${order.scope}</span>
+        </div>
+        <div class="row">
+          <span>Features:</span>
+          <span>${order.features.join(", ")}</span>
+        </div>
+        <div class="row">
+          <span>Payment Status:</span>
+          <span class="badge">${order.paymentStatus === 'Paid' ? 'PAID via UPI' : 'ORDER CONFIRMED'}</span>
+        </div>
+        ${order.utrNumber ? `<div class="row"><span>UPI Ref / UTR:</span><strong>${order.utrNumber}</strong></div>` : ''}
+
+        <div class="row" style="border-top: 2px solid #e2e8f0; margin-top: 15px; padding-top: 15px;">
+          <span class="total">Total Amount Paid:</span>
+          <span class="total">₹500.00</span>
+        </div>
+
+        <div class="footer">
+          Thank you for choosing Plumine Coder! Your website is being crafted with passion.
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;" class="no-print">
+          <button onclick="window.print()" style="background: #7c3aed; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;">
+            Print / Save as PDF
+          </button>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const invoiceWindow = window.open("", "_blank");
+  invoiceWindow.document.write(invoiceHtml);
+  invoiceWindow.document.close();
+}
+
+/* ==========================================================================
+   FEATURE 5: CREATOR QUICK-REPLY WHATSAPP TEMPLATES & PAYMENT TOGGLE
+   ========================================================================== */
+let activeQuickReplyOrderId = null;
+
+function openQuickReplyModal(orderId) {
+  activeQuickReplyOrderId = orderId;
+  const orders = getOrders();
+  const order = orders.find(o => o.id === orderId);
+  if (order) {
+    document.getElementById("quickReplyClientName").textContent = `${order.clientName} (+91 ${order.clientPhone})`;
+  }
+  const modal = document.getElementById("quickReplyModal");
+  modal.classList.add("show");
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeQuickReplyModal() {
+  document.getElementById("quickReplyModal").classList.remove("show");
+}
+
+function sendQuickTemplate(type) {
+  if (!activeQuickReplyOrderId) return;
+  const orders = getOrders();
+  const order = orders.find(o => o.id === activeQuickReplyOrderId);
+  if (!order) return;
+
+  let msg = "";
+  if (type === "accepted") {
+    msg = `Hi ${order.clientName}! 🚀 This is Plumine Coder. Your website request for *"${order.title}"* (${order.id}) has been accepted and is now in active development. I will share a live preview draft with you shortly!`;
+    updateOrderStatus(order.id, "In Progress");
+  } else if (type === "preview") {
+    msg = `Hi ${order.clientName}! 🎨 Great news — your website draft for *"${order.title}"* is ready for your review! Please let me know any adjustments or feedback you'd like me to make.`;
+    updateOrderStatus(order.id, "Ready for Review");
+  } else if (type === "delivered") {
+    msg = `Hi ${order.clientName}! 🎉 Your custom website for *"${order.title}"* is 100% complete and delivered! Thank you for working with Plumine Coder. Feel free to contact me anytime for support.`;
+    updateOrderStatus(order.id, "Completed");
+  }
+
+  const waUrl = `https://wa.me/91${order.clientPhone}?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl, "_blank");
+  closeQuickReplyModal();
+  showToast("Opening WhatsApp with quick status message...", "send");
+}
+
+function toggleOrderPaymentStatus(orderId) {
+  const orders = getOrders();
+  const order = orders.find(o => o.id === orderId);
+  if (order) {
+    order.paymentStatus = (order.paymentStatus === "Paid") ? "Pending" : "Paid";
+    saveOrders(orders);
+    syncOrderToFirebase(order);
+    renderAdminHub();
+    showToast(`Order ${order.id} payment set to: ${order.paymentStatus}`, "check");
+  }
 }
