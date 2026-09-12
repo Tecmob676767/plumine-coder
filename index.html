@@ -82,6 +82,18 @@
               </span>
               <button onclick="clearNotifications()" style="background:transparent; border:none; color:var(--text-muted); font-size:0.72rem; cursor:pointer; text-decoration:underline;">Clear all</button>
             </div>
+            
+            <!-- Real Browser Push Notification Permission Banner -->
+            <div id="browserNotifBanner" style="background: rgba(168,85,247,0.15); border: 1px solid var(--border-subtle); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.5rem; font-size: 0.75rem; text-align: center;">
+              <div style="color: var(--text-main); font-weight: 600; margin-bottom: 0.25rem;">
+                🔔 Enable Real Push Alerts
+              </div>
+              <div style="color: var(--text-muted); margin-bottom: 0.4rem;">Get browser alerts on every order step &amp; payment status update.</div>
+              <button onclick="requestRealNotificationPermission()" class="btn-sm-auth" style="padding: 0.25rem 0.65rem; font-size: 0.72rem; width: 100%;">
+                Allow Real Notifications
+              </button>
+            </div>
+
             <div id="notifList" style="display:flex; flex-direction:column; gap:0.45rem;">
               <div style="font-size:0.78rem; color:var(--text-muted); text-align:center; padding:1rem 0;">No new notifications</div>
             </div>
@@ -213,7 +225,7 @@
           </div>
           <div class="stat-item">
             <div class="stat-icon"><i data-lucide="star"></i></div>
-            <div class="stat-number">5★</div>
+            <div class="stat-number" id="statRating">5.0★</div>
             <div class="stat-label">Client Rating</div>
           </div>
         </div>
@@ -455,48 +467,72 @@
       </div>
     </section>
 
-    <!-- TESTIMONIALS SECTION -->
+    <!-- TESTIMONIALS & CLIENT REVIEWS SECTION -->
     <section id="testimonials" class="section testimonials-section">
       <div class="container">
         <div class="section-header text-center">
-          <span class="section-tag">Client Love</span>
-          <h2 class="section-title">What Clients Say</h2>
-          <p class="section-subtitle">Real feedback from real clients who got their website at just ₹500.</p>
+          <span class="section-tag">Client Feedback</span>
+          <h2 class="section-title">Verified Client Reviews</h2>
+          <p class="section-subtitle">Real experiences and ratings from real clients who had their websites crafted by Plumine Coder.</p>
         </div>
-        <div class="testimonials-grid">
-          <div class="testi-card glass-panel">
-            <div class="testi-stars">⭐⭐⭐⭐⭐</div>
-            <p class="testi-quote">"I got my bakery website in just one day! The design is beautiful and my customers love ordering through WhatsApp now. Best ₹500 I ever spent!"</p>
-            <div class="testi-author">
-              <div class="testi-avatar">RP</div>
-              <div>
-                <strong>Riya P.</strong>
-                <span>Urban Crust Bakery</span>
-              </div>
+
+        <!-- Dynamic Reviews Grid Container -->
+        <div class="testimonials-grid" id="reviewsContainer">
+          <!-- Injected dynamically from real user reviews -->
+        </div>
+
+        <!-- Interactive Write a Review Box -->
+        <div class="write-review-card glass-panel" style="margin-top: 2.5rem; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); max-width: 760px; margin-left: auto; margin-right: auto;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+            <div class="modal-icon" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">
+              <i data-lucide="message-square-plus"></i>
+            </div>
+            <div>
+              <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: var(--text-main);">Share Your Review</h3>
+              <p style="font-size: 0.84rem; color: var(--text-muted);">Had a website built by Plumine Coder? Leave your honest feedback below!</p>
             </div>
           </div>
-          <div class="testi-card glass-panel">
-            <div class="testi-stars">⭐⭐⭐⭐⭐</div>
-            <p class="testi-quote">"My portfolio site looks like it cost ₹50,000 but I paid only ₹500. Plumine Coder is genuinely talented. Clients started reaching out within a week!"</p>
-            <div class="testi-author">
-              <div class="testi-avatar">AK</div>
-              <div>
-                <strong>Arjun K.</strong>
-                <span>Freelance Designer</span>
+
+          <form id="reviewForm" onsubmit="handleReviewSubmit(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="form-row">
+              <div class="form-field">
+                <label for="reviewAuthorName">Your Full Name <span class="required">*</span></label>
+                <input type="text" id="reviewAuthorName" required placeholder="e.g. Rahul Sharma" />
+              </div>
+              <div class="form-field">
+                <label for="reviewBusinessName">Website / Business Name</label>
+                <input type="text" id="reviewBusinessName" placeholder="e.g. Sharma Sweets, Tech Portfolio" />
               </div>
             </div>
-          </div>
-          <div class="testi-card glass-panel">
-            <div class="testi-stars">⭐⭐⭐⭐⭐</div>
-            <p class="testi-quote">"Super fast delivery, zero hassle. I described what I wanted on WhatsApp and got a stunning website for my salon. Highly recommended for small businesses!"</p>
-            <div class="testi-author">
-              <div class="testi-avatar">SM</div>
-              <div>
-                <strong>Sneha M.</strong>
-                <span>Glamour Salon Owner</span>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label for="reviewRating">Rating <span class="required">*</span></label>
+                <select id="reviewRating" required style="background: rgba(255,255,255,0.06); border: 1px solid var(--border-subtle); color: #fbbf24; font-weight: 700;">
+                  <option value="5">⭐⭐⭐⭐⭐ (5 / 5 - Exceptional)</option>
+                  <option value="4">⭐⭐⭐⭐ (4 / 5 - Very Good)</option>
+                  <option value="3">⭐⭐⭐ (3 / 5 - Good)</option>
+                  <option value="2">⭐⭐ (2 / 5 - Average)</option>
+                  <option value="1">⭐ (1 / 5 - Poor)</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="reviewOrderId">Order ID (Optional)</label>
+                <input type="text" id="reviewOrderId" placeholder="e.g. #PLUM-1234" />
               </div>
             </div>
-          </div>
+
+            <div class="form-field">
+              <label for="reviewComment">Your Review &amp; Experience <span class="required">*</span></label>
+              <textarea id="reviewComment" rows="3" required placeholder="Describe your experience with Plumine Coder, speed of delivery, website design, and communication..."></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
+              <button type="submit" class="btn-primary" style="padding: 0.75rem 1.75rem;">
+                <i data-lucide="send"></i> Post Client Review
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </section>
