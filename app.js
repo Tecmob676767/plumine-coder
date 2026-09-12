@@ -31,11 +31,14 @@ const DEFAULT_FIREBASE_CONFIG = {
 
 // Initialize on DOM ready
 document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
   initStorage();
   initFirebase();
   checkAuthSession();
   updateCreatorBadge();
   initLivePreviewListener();
+  updateWebsitesStatsCounter();
+  renderNotifications();
 
   // Suddenly ask for login when first entering if not yet authenticated
   if (!currentUser) {
@@ -506,6 +509,11 @@ function handleFormSubmit(e) {
   // 2. Sync to Google Firebase Cloud
   syncOrderToFirebase(newOrder);
 
+  // 3. Trigger step & payment pending notifications
+  addNotification(`🎉 New Order Created: ${newOrder.id} - "${newOrder.title}" (₹500)`, "order");
+  addNotification(`⚠️ Payment Pending: ₹500 for order ${newOrder.id}. Please complete UPI payment.`, "payment");
+  updateWebsitesStatsCounter();
+
   // Reset form
   document.getElementById("webRequestForm").reset();
 
@@ -865,6 +873,12 @@ function updateOrderStatus(orderId, newStatus) {
     // Sync status change to Firebase
     syncOrderToFirebase(order);
 
+    // Notify client / user of step update
+    addNotification(`🔄 Step Updated: Order ${order.id} is now "${newStatus}"`, "step");
+    if (order.paymentStatus !== "Paid" && newStatus !== "New Request") {
+      addNotification(`⚠️ Reminder: Payment of ₹500 is pending for ${order.id}`, "payment");
+    }
+
     renderAdminHub();
     showToast(`Order ${orderId} updated to "${newStatus}"`, "check");
   }
@@ -1196,6 +1210,7 @@ function submitUpiPaymentProof() {
       order.paymentStatus = "Paid";
       saveOrders(orders);
       syncOrderToFirebase(order);
+      addNotification(`✅ Payment Confirmed: ₹500 verified for ${order.id} (UTR: ${utr})`, "payment");
     }
   }
 
@@ -1347,5 +1362,221 @@ function toggleOrderPaymentStatus(orderId) {
     syncOrderToFirebase(order);
     renderAdminHub();
     showToast(`Order ${order.id} payment set to: ${order.paymentStatus}`, "check");
+
+    if (order.paymentStatus === "Pending") {
+      addNotification(`⚠️ Payment Pending: ₹500 for order ${order.id} (${order.title})`, "payment");
+    } else {
+      addNotification(`💰 Payment Received: ₹500 confirmed for ${order.id} (${order.title})`, "payment");
+    }
   }
 }
+
+/* ==========================================================================
+   FEATURE: LIVE NOTIFICATIONS SYSTEM (EVERY STEP & PAYMENT PENDING)
+   ========================================================================== */
+function getNotifications() {
+  try {
+    const raw = localStorage.getItem("plumine_notifications");
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveNotifications(notifs) {
+  localStorage.setItem("plumine_notifications", JSON.stringify(notifs));
+}
+
+function addNotification(message, type = "info") {
+  const notifs = getNotifications();
+  const newNotif = {
+    id: "notif_" + Date.now(),
+    message: message,
+    type: type, // 'step', 'payment', 'order', 'info'
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    date: new Date().toLocaleDateString(),
+    unread: true
+  };
+  notifs.unshift(newNotif);
+  // Keep last 30 notifications
+  if (notifs.length > 30) notifs.pop();
+  saveNotifications(notifs);
+  renderNotifications();
+}
+
+function renderNotifications() {
+  const notifs = getNotifications();
+  const badge = document.getElementById("notifBadgeCount");
+  const list = document.getElementById("notifList");
+  if (!list) return;
+
+  const unreadCount = notifs.filter(n => n.unread).length;
+  if (badge) {
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
+      badge.style.display = "inline-block";
+    } else {
+      badge.style.display = "none";
+    }
+  }
+
+  if (notifs.length === 0) {
+    list.innerHTML = `<div style="font-size:0.78rem; color:var(--text-muted); text-align:center; padding:1rem 0;">No notifications yet</div>`;
+    return;
+  }
+
+  list.innerHTML = notifs.map(n => {
+    let iconColor = "#a855f7";
+    let iconName = "info";
+    if (n.type === "payment") {
+      iconColor = n.message.includes("Pending") ? "#f59e0b" : "#10b981";
+      iconName = n.message.includes("Pending") ? "alert-triangle" : "check-circle";
+    } else if (n.type === "step") {
+      iconColor = "#38bdf8";
+      iconName = "arrow-right-circle";
+    } else if (n.type === "order") {
+      iconColor = "#34d399";
+      iconName = "sparkles";
+    }
+
+    return `
+      <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); padding: 0.5rem 0.65rem; border-radius: 8px; display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.78rem;">
+        <span style="color:${iconColor}; margin-top: 2px;">•</span>
+        <div style="flex:1;">
+          <div style="color: var(--text-main); line-height: 1.35;">${escapeHtml(n.message)}</div>
+          <div style="color: var(--text-dim); font-size: 0.68rem; margin-top: 2px;">${n.timestamp} • ${n.date}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function toggleNotificationsPanel() {
+  const panel = document.getElementById("notifPanel");
+  if (!panel) return;
+  const isVisible = panel.style.display === "block";
+  panel.style.display = isVisible ? "none" : "block";
+
+  if (!isVisible) {
+    // Mark notifications as read when opening panel
+    const notifs = getNotifications();
+    notifs.forEach(n => n.unread = false);
+    saveNotifications(notifs);
+    const badge = document.getElementById("notifBadgeCount");
+    if (badge) badge.style.display = "none";
+    renderNotifications();
+  }
+}
+
+function clearNotifications() {
+  localStorage.removeItem("plumine_notifications");
+  renderNotifications();
+  showToast("Notifications cleared", "trash-2");
+}
+
+// Close notifications panel when clicking outside
+document.addEventListener("click", (e) => {
+  const wrapper = document.querySelector(".notification-wrapper");
+  const panel = document.getElementById("notifPanel");
+  if (wrapper && panel && !wrapper.contains(e.target)) {
+    panel.style.display = "none";
+  }
+});
+
+/* ==========================================================================
+   FEATURE: LIVE COUNTER (HOW MANY WEBS CREATED)
+   ========================================================================== */
+function updateWebsitesStatsCounter() {
+  const statWebEl = document.getElementById("statWebsites");
+  const statClientsEl = document.getElementById("statClients");
+  if (!statWebEl) return;
+
+  const orders = getOrders();
+  // Base display count: 48 historical completed websites + total registered orders
+  const totalCreated = 48 + orders.length;
+  
+  // Count unique clients
+  const uniquePhones = new Set(orders.map(o => o.clientPhone));
+  const totalClients = 42 + uniquePhones.size;
+
+  animateValue(statWebEl, 0, totalCreated, 1200);
+  if (statClientsEl) {
+    animateValue(statClientsEl, 0, totalClients, 1200);
+  }
+}
+
+function animateValue(el, start, end, duration) {
+  if (!el) return;
+  let startTimestamp = null;
+  const step = (timestamp) => {
+    if (!startTimestamp) startTimestamp = timestamp;
+    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+    el.textContent = Math.floor(progress * (end - start) + start);
+    if (progress < 1) {
+      window.requestAnimationFrame(step);
+    } else {
+      el.textContent = end + "+";
+    }
+  };
+  window.requestAnimationFrame(step);
+}
+
+/* ==========================================================================
+   FEATURE: TERMS & CONDITIONS MODAL CONTROLS
+   ========================================================================== */
+function openTermsModal() {
+  const modal = document.getElementById("termsModal");
+  if (modal) {
+    modal.classList.add("show");
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
+function closeTermsModal() {
+  const modal = document.getElementById("termsModal");
+  if (modal) modal.classList.remove("show");
+}
+
+/* ==========================================================================
+   FEATURE: DARK / LIGHT MODE TOGGLE
+   ========================================================================== */
+function toggleDarkMode() {
+  document.body.classList.toggle("light-mode");
+  const isLight = document.body.classList.contains("light-mode");
+  localStorage.setItem("plumine_theme", isLight ? "light" : "dark");
+  const icon = document.getElementById("themeIcon");
+  if (icon) {
+    icon.setAttribute("data-lucide", isLight ? "sun" : "moon");
+    if (window.lucide) lucide.createIcons();
+  }
+  showToast(`Switched to ${isLight ? 'Light' : 'Dark'} mode`, isLight ? "sun" : "moon");
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem("plumine_theme");
+  if (savedTheme === "light") {
+    document.body.classList.add("light-mode");
+    const icon = document.getElementById("themeIcon");
+    if (icon) icon.setAttribute("data-lucide", "sun");
+  }
+}
+
+/* ==========================================================================
+   FEATURE: SCROLL TO TOP & BACK TO TOP BUTTON
+   ========================================================================== */
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+window.addEventListener("scroll", () => {
+  const fabTop = document.getElementById("fabTop");
+  if (fabTop) {
+    if (window.scrollY > 350) {
+      fabTop.classList.add("visible");
+    } else {
+      fabTop.classList.remove("visible");
+    }
+  }
+});

@@ -67,6 +67,32 @@
           <span class="badge-counter" id="creatorBadgeCount">0</span>
         </button>
 
+        <!-- Live Notifications Bell -->
+        <div class="notification-wrapper" style="position: relative;">
+          <button class="theme-toggle" id="notifBtn" onclick="toggleNotificationsPanel()" title="Order &amp; Payment Notifications">
+            <i data-lucide="bell" id="notifBellIcon"></i>
+            <span class="badge-counter" id="notifBadgeCount" style="display:none; position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:0.65rem; padding:1px 5px; border-radius:999px;">0</span>
+          </button>
+          
+          <!-- Dropdown Notifications Menu -->
+          <div id="notifPanel" class="glass-panel" style="display:none; position:absolute; top:calc(100% + 10px); right:0; width:310px; max-height:380px; overflow-y:auto; border-radius:12px; border:1px solid var(--border-subtle); padding:0.75rem; box-shadow:0 12px 35px rgba(0,0,0,0.6); z-index:1100; text-align:left; background: var(--bg-surface);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-subtle); padding-bottom:0.4rem; margin-bottom:0.5rem;">
+              <span style="font-weight:700; font-size:0.85rem; color:var(--text-main); display:flex; align-items:center; gap:0.3rem;">
+                <i data-lucide="bell-ring" style="width:14px; height:14px; color:var(--color-primary);"></i> Updates &amp; Alerts
+              </span>
+              <button onclick="clearNotifications()" style="background:transparent; border:none; color:var(--text-muted); font-size:0.72rem; cursor:pointer; text-decoration:underline;">Clear all</button>
+            </div>
+            <div id="notifList" style="display:flex; flex-direction:column; gap:0.45rem;">
+              <div style="font-size:0.78rem; color:var(--text-muted); text-align:center; padding:1rem 0;">No new notifications</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button class="theme-toggle" id="themeToggle" onclick="toggleDarkMode()" title="Toggle dark/light mode">
+          <i data-lucide="moon" id="themeIcon"></i>
+        </button>
+
         <!-- Mobile Menu Toggle -->
         <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
           <i data-lucide="menu"></i>
@@ -161,6 +187,67 @@
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE STATS COUNTER SECTION -->
+    <section class="stats-section">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-icon"><i data-lucide="globe"></i></div>
+            <div class="stat-number" id="statWebsites">0</div>
+            <div class="stat-label">Websites Created</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon"><i data-lucide="users"></i></div>
+            <div class="stat-number" id="statClients">0</div>
+            <div class="stat-label">Happy Clients</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon"><i data-lucide="zap"></i></div>
+            <div class="stat-number">24h</div>
+            <div class="stat-label">Avg. Delivery</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon"><i data-lucide="star"></i></div>
+            <div class="stat-number">5★</div>
+            <div class="stat-label">Client Rating</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section id="how-it-works" class="section how-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-tag">Simple Process</span>
+          <h2 class="section-title">How It Works — 3 Easy Steps</h2>
+          <p class="section-subtitle">From idea to live website in under 48 hours.</p>
+        </div>
+        <div class="steps-grid">
+          <div class="step-card glass-panel">
+            <div class="step-number">01</div>
+            <div class="step-icon"><i data-lucide="file-text"></i></div>
+            <h3>Fill the Request Form</h3>
+            <p>Enter your business name, website type, color preferences, and any special features you need. Takes less than 2 minutes.</p>
+          </div>
+          <div class="step-arrow"><i data-lucide="arrow-right"></i></div>
+          <div class="step-card glass-panel">
+            <div class="step-number">02</div>
+            <div class="step-icon"><i data-lucide="message-circle"></i></div>
+            <h3>Send via WhatsApp</h3>
+            <p>Your request is auto-formatted and sent directly to Plumine Coder's WhatsApp. Pay ₹500 via UPI to confirm.</p>
+          </div>
+          <div class="step-arrow"><i data-lucide="arrow-right"></i></div>
+          <div class="step-card glass-panel">
+            <div class="step-number">03</div>
+            <div class="step-icon"><i data-lucide="rocket"></i></div>
+            <h3>Receive Your Website</h3>
+            <p>Your fully built, mobile-ready website is delivered within 24–48 hours. Track live progress from your dashboard.</p>
           </div>
         </div>
       </div>
@@ -280,6 +367,135 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOSTING CHARGES SECTION -->
+    <section id="hosting" class="section hosting-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-tag">Additional Info</span>
+          <h2 class="section-title">Hosting &amp; Domain — Monthly Charges</h2>
+          <p class="section-subtitle">The ₹500 covers <strong>website design &amp; development only</strong>. Hosting and domain are separate recurring costs based on your chosen URL type. Plumine Coder provides full guidance on the best plan for you.</p>
+        </div>
+
+        <div class="hosting-grid">
+          <!-- Free Hosting -->
+          <div class="hosting-card glass-panel free-plan">
+            <div class="hosting-badge">FREE</div>
+            <div class="hosting-icon"><i data-lucide="github"></i></div>
+            <h3>GitHub Pages / Netlify</h3>
+            <div class="hosting-price"><span class="h-free">₹0 / month</span></div>
+            <p class="hosting-url-type">🌐 URL: <code>yourname.github.io</code></p>
+            <ul class="hosting-features">
+              <li><i data-lucide="check"></i> Completely free forever</li>
+              <li><i data-lucide="check"></i> Automated deployment</li>
+              <li><i data-lucide="check"></i> SSL/HTTPS included</li>
+              <li><i data-lucide="x-circle" style="color:#f87171"></i> URL has github.io suffix</li>
+            </ul>
+            <span class="hosting-tag">Best for: Portfolios, Personal Sites</span>
+          </div>
+
+          <!-- Subdomain Hosting -->
+          <div class="hosting-card glass-panel">
+            <div class="hosting-icon"><i data-lucide="link-2"></i></div>
+            <h3>Shared Hosting (Subdomain)</h3>
+            <div class="hosting-price">₹50 – ₹150 <span class="h-per">/ month</span></div>
+            <p class="hosting-url-type">🌐 URL: <code>yoursite.hostingprovider.com</code></p>
+            <ul class="hosting-features">
+              <li><i data-lucide="check"></i> Low cost entry option</li>
+              <li><i data-lucide="check"></i> Easy cPanel setup</li>
+              <li><i data-lucide="check"></i> SSL available</li>
+              <li><i data-lucide="x-circle" style="color:#f87171"></i> Not a custom domain</li>
+            </ul>
+            <span class="hosting-tag">Best for: Testing, Startups</span>
+          </div>
+
+          <!-- Custom .in Domain -->
+          <div class="hosting-card glass-panel popular-hosting">
+            <div class="hosting-badge pop-badge">Most Popular</div>
+            <div class="hosting-icon"><i data-lucide="globe"></i></div>
+            <h3>Custom .in / .com Domain</h3>
+            <div class="hosting-price">₹200 – ₹500 <span class="h-per">/ month</span></div>
+            <p class="hosting-url-type">🌐 URL: <code>yourbusiness.in</code> or <code>.com</code></p>
+            <ul class="hosting-features">
+              <li><i data-lucide="check"></i> Professional brand look</li>
+              <li><i data-lucide="check"></i> Custom email possible</li>
+              <li><i data-lucide="check"></i> SEO-friendly domain</li>
+              <li><i data-lucide="check"></i> Domain + Hosting bundle</li>
+            </ul>
+            <span class="hosting-tag">Best for: Businesses, Shops, Clinics</span>
+          </div>
+
+          <!-- Premium .com Hosting -->
+          <div class="hosting-card glass-panel">
+            <div class="hosting-icon"><i data-lucide="server"></i></div>
+            <h3>Premium Cloud Hosting</h3>
+            <div class="hosting-price">₹500 – ₹1200 <span class="h-per">/ month</span></div>
+            <p class="hosting-url-type">🌐 URL: <code>yourbrand.com</code> + fast CDN</p>
+            <ul class="hosting-features">
+              <li><i data-lucide="check"></i> Ultra-fast loading speed</li>
+              <li><i data-lucide="check"></i> Global CDN delivery</li>
+              <li><i data-lucide="check"></i> Daily backups</li>
+              <li><i data-lucide="check"></i> Priority support</li>
+            </ul>
+            <span class="hosting-tag">Best for: High-traffic, E-commerce</span>
+          </div>
+        </div>
+
+        <div class="hosting-note glass-panel">
+          <i data-lucide="info"></i>
+          <div>
+            <strong>Need help choosing?</strong> Plumine Coder will personally guide you on the best hosting plan after your website is ready.
+            <a href="javascript:void(0)" onclick="openDirectWhatsApp()" style="color: var(--accent-primary); font-weight: 600;"> Chat on WhatsApp →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section id="testimonials" class="section testimonials-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-tag">Client Love</span>
+          <h2 class="section-title">What Clients Say</h2>
+          <p class="section-subtitle">Real feedback from real clients who got their website at just ₹500.</p>
+        </div>
+        <div class="testimonials-grid">
+          <div class="testi-card glass-panel">
+            <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+            <p class="testi-quote">"I got my bakery website in just one day! The design is beautiful and my customers love ordering through WhatsApp now. Best ₹500 I ever spent!"</p>
+            <div class="testi-author">
+              <div class="testi-avatar">RP</div>
+              <div>
+                <strong>Riya P.</strong>
+                <span>Urban Crust Bakery</span>
+              </div>
+            </div>
+          </div>
+          <div class="testi-card glass-panel">
+            <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+            <p class="testi-quote">"My portfolio site looks like it cost ₹50,000 but I paid only ₹500. Plumine Coder is genuinely talented. Clients started reaching out within a week!"</p>
+            <div class="testi-author">
+              <div class="testi-avatar">AK</div>
+              <div>
+                <strong>Arjun K.</strong>
+                <span>Freelance Designer</span>
+              </div>
+            </div>
+          </div>
+          <div class="testi-card glass-panel">
+            <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+            <p class="testi-quote">"Super fast delivery, zero hassle. I described what I wanted on WhatsApp and got a stunning website for my salon. Highly recommended for small businesses!"</p>
+            <div class="testi-author">
+              <div class="testi-avatar">SM</div>
+              <div>
+                <strong>Sneha M.</strong>
+                <span>Glamour Salon Owner</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -559,6 +775,14 @@
                 <div class="callout-label">Estimated Total Price:</div>
                 <div class="callout-val">₹500 <span class="sub">(Single Website)</span></div>
               </div>
+
+              <!-- Terms and Conditions agreement checkbox -->
+              <div class="terms-agree-row" style="margin-bottom: 0.85rem; display: flex; align-items: flex-start; gap: 0.5rem; text-align: left; font-size: 0.82rem; color: var(--text-muted);">
+                <input type="checkbox" id="termsAgreement" required style="margin-top: 3px; accent-color: var(--color-primary); cursor: pointer; width: 16px; height: 16px;" />
+                <label for="termsAgreement" style="cursor: pointer; line-height: 1.4;">
+                  I agree to the <a href="javascript:void(0)" onclick="openTermsModal()" style="color: var(--color-primary); text-decoration: underline; font-weight: 600;">Terms &amp; Conditions</a> (₹500 single-page creation, 24-48h delivery, revisions included, separate recurring hosting costs).
+                </label>
+              </div>
               
               <button type="submit" class="btn-submit-request">
                 <i data-lucide="send"></i>
@@ -660,7 +884,10 @@
         <h4>Navigation</h4>
         <a href="#features">Features</a>
         <a href="#pricing">₹500 Offer</a>
+        <a href="#hosting">Hosting Info</a>
+        <a href="#how-it-works">How It Works</a>
         <a href="#samples">Showcase</a>
+        <a href="#testimonials">Reviews</a>
         <a href="#request-section">Send Request</a>
       </div>
 
@@ -668,6 +895,14 @@
         <h4>Client Tools</h4>
         <a href="javascript:void(0)" onclick="openClientTrackModal()">Track My Request</a>
         <a href="javascript:void(0)" onclick="openAuthModal()">Login / Account</a>
+        <a href="javascript:void(0)" onclick="openTermsModal()">Terms &amp; Conditions</a>
+        <a href="#faq">FAQ</a>
+        <h4 style="margin-top:1rem;">Follow Us</h4>
+        <div class="footer-social">
+          <a href="https://wa.me/919535770964" target="_blank" class="social-btn wa" title="WhatsApp"><i data-lucide="message-circle"></i></a>
+          <a href="mailto:coderking78@gmail.com" class="social-btn mail" title="Email"><i data-lucide="mail"></i></a>
+          <a href="https://github.com/Tecmob676767/plumine-coder" target="_blank" class="social-btn gh" title="GitHub"><i data-lucide="github"></i></a>
+        </div>
       </div>
 
       <div class="footer-contact">
@@ -681,9 +916,16 @@
       </div>
     </div>
     <div class="footer-bottom text-center">
-      <p>© 2026 Plumine Coder. All rights reserved. Crafted for creators & businesses.</p>
+      <p>© 2026 Plumine Coder. All rights reserved. Crafted for creators &amp; businesses. • <a href="javascript:void(0)" onclick="openTermsModal()" style="color: var(--color-primary); text-decoration: underline;">Terms &amp; Conditions</a></p>
     </div>
   </footer>
+  <!-- FLOATING WHATSAPP + BACK TO TOP BUTTONS -->
+  <a href="javascript:void(0)" onclick="openDirectWhatsApp()" class="fab-whatsapp" title="Chat on WhatsApp">
+    <i data-lucide="message-circle"></i>
+  </a>
+  <button onclick="scrollToTop()" class="fab-top" id="fabTop" title="Back to top">
+    <i data-lucide="chevron-up"></i>
+  </button>
 
   <!-- ==================== MODALS ==================== -->
 
@@ -1063,6 +1305,61 @@
           <button class="btn-secondary-action" style="text-align: left; padding: 0.85rem;" onclick="sendQuickTemplate('delivered')">
             <div style="font-weight: 700; color: #fbbf24; margin-bottom: 0.2rem;">🚀 3. Final Website Delivered</div>
             <div style="font-size: 0.8rem; color: var(--text-muted);">"Hi! Your website is 100% complete and published! Check it out."</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  <!-- 10. TERMS AND CONDITIONS MODAL -->
+  <div id="termsModal" class="modal-backdrop">
+    <div class="modal-card glass-panel modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon" style="background: rgba(168, 85, 247, 0.2); color: #a855f7;">
+            <i data-lucide="file-check-2"></i>
+          </div>
+          <div>
+            <h3 class="modal-title">Terms &amp; Conditions</h3>
+            <p class="modal-desc">Plumine Coder — Transparent Creator Agreements &amp; Policies</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeTermsModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="modal-body" style="max-height: 65vh; overflow-y: auto; text-align: left; font-size: 0.88rem; line-height: 1.6; color: var(--text-muted);">
+        <div style="background: rgba(168,85,247,0.1); border: 1px solid var(--border-subtle); padding: 0.85rem 1rem; border-radius: 8px; margin-bottom: 1rem;">
+          <strong style="color: #fbbf24;">⚡ Flat ₹500 Summary:</strong>
+          <span> Our ₹500 pricing covers full single-page website design, development, mobile responsiveness, contact form &amp; WhatsApp integration.</span>
+        </div>
+
+        <h4 style="color: var(--text-main); font-size: 0.95rem; margin-top: 1rem; margin-bottom: 0.35rem;">1. Scope of Work (₹500 Single Website)</h4>
+        <p>Each standard order of ₹500 covers one complete custom responsive single-page website. This includes Header/Hero, About section, Services/Portfolio, Contact form, and WhatsApp click-to-chat integration.</p>
+
+        <h4 style="color: var(--text-main); font-size: 0.95rem; margin-top: 1rem; margin-bottom: 0.35rem;">2. Turnaround Time &amp; Delivery</h4>
+        <p>Standard delivery is <strong>24 to 48 hours</strong> starting once all required assets (business name, images, logos, copy) are submitted. Urgent priority delivery is handled as communicated via WhatsApp.</p>
+
+        <h4 style="color: var(--text-main); font-size: 0.95rem; margin-top: 1rem; margin-bottom: 0.35rem;">3. Hosting &amp; Domain Charges (Separate &amp; Recurring)</h4>
+        <p>The ₹500 fee is strictly for <strong>coding and design</strong>. Hosting and domain names are separate recurring charges based on your selected URL:</p>
+        <ul style="padding-left: 1.2rem; margin-top: 0.3rem;">
+          <li><strong>Free Hosting:</strong> GitHub Pages / Netlify (<code>name.github.io</code>) — ₹0 / month</li>
+          <li><strong>Subdomain Hosting:</strong> <code>yoursite.provider.com</code> — ₹50 to ₹150 / month</li>
+          <li><strong>Custom Domain:</strong> <code>yourbusiness.in</code> or <code>.com</code> — ₹200 to ₹500 / month</li>
+          <li><strong>Premium Cloud:</strong> High-performance server with CDN — ₹500 to ₹1,200 / month</li>
+        </ul>
+        <p style="margin-top: 0.4rem;">Plumine Coder provides free step-by-step guidance to set up your domain and hosting.</p>
+
+        <h4 style="color: var(--text-main); font-size: 0.95rem; margin-top: 1rem; margin-bottom: 0.35rem;">4. Payment Terms &amp; UPI Confirmation</h4>
+        <p>Payments are made via UPI (<code>9535770964@upi</code>). Orders marked as "Paid" once the 12-digit UTR/transaction reference is confirmed. An official downloadable receipt is provided upon payment verification.</p>
+
+        <h4 style="color: var(--text-main); font-size: 0.95rem; margin-top: 1rem; margin-bottom: 0.35rem;">5. Revisions &amp; Satisfaction Policy</h4>
+        <p>Free revisions for color palettes, text adjustments, and layout alignment are provided until you are completely satisfied with the single-page layout.</p>
+
+        <h4 style="color: var(--text-main); font-size: 0.95rem; margin-top: 1rem; margin-bottom: 0.35rem;">6. Communication &amp; Support</h4>
+        <p>Direct communication is maintained via WhatsApp (+91 9535770964) and email (coderking78@gmail.com). Status updates can be tracked live in the "My Requests" dashboard anytime using your phone number.</p>
+
+        <div style="margin-top: 1.5rem; text-align: right;">
+          <button class="btn-modal-primary" style="padding: 0.6rem 1.25rem;" onclick="closeTermsModal()">
+            <span>I Understand &amp; Agree</span>
+            <i data-lucide="check"></i>
           </button>
         </div>
       </div>
